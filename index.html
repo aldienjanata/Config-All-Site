@@ -973,7 +973,7 @@ var cur="cilacap",rows=[],rid=0;
 // Per-site state (rows, rid, output HTML)
 var siteState={};
 ["cilacap","karangputat","banyumas","rowokele","kebumen"].forEach(function(s){
-  siteState[s]={rows:[],rid:0,outHtml:"",outVis:false};
+  siteState[s]={rows:[],rid:0,outHtml:"",outVis:false,genData:[]};
 });
 
 // Per-site last-used placeholders (persisted in localStorage)
@@ -1040,17 +1040,19 @@ function setSite(s){
   rCards();
   var mc=document.getElementById("mobCards");
   if(mc)initAutoW(mc);
-  // 6. Restore output synchronously
-
+  // 6. Restore output
+  var os=document.getElementById("outSec");
+  if(st.genData&&st.genData.length>0){
+    buildOut(st.genData);
+    if(os)os.style.display="block";
+  }else{
     var oc=document.getElementById("outCont");
-    var os=document.getElementById("outSec");
-    if(oc&&os){
-      oc.innerHTML=st.outHtml||"";
-      os.style.display=(st.outHtml&&st.outHtml.trim().length>0)?"block":"none";
-    }
-    // Add row if empty
-    if(rows.length===0)addRow();
-    upCnt();
+    if(oc)oc.innerHTML="";
+    if(os)os.style.display="none";
+  }
+  // Add row if empty
+  if(rows.length===0)addRow();
+  upCnt();
   
 }
 function rInfo(){
@@ -1236,17 +1238,10 @@ function vld(row){
   return miss;
 }
 
-// GENERATE
-function doGen(){
-  syncD();
-  var valid=rows.filter(function(r){return vld(r).length===0;});
-  if(!valid.length){
-  var allMiss=rows.map(function(r){return vld(r);}).filter(function(m){return m.length>0;});
-  var missing=allMiss.length?allMiss[0].join(", "):"unknown";
-  showToast("Field wajib belum diisi: <strong>"+missing+"</strong>","err",5000);return;
-}
+// BUILD OUTPUT - dipakai oleh doGen() dan restore saat setSite()
+function buildOut(validRows){
   var out=document.getElementById("outCont");out.innerHTML="";
-  valid.forEach(function(row,idx){
+  validRows.forEach(function(row,idx){
     var sc=gSc(row),z=row.ot!=="aon";
     var hasDel=(row.og&&row.oo);
     var vt=sc.vh?"PPPoE: "+sc.vp+" &middot; HS: "+sc.vh:"PPPoE: "+sc.vp;
@@ -1288,10 +1283,22 @@ function doGen(){
     var ce=document.getElementById("cm"+idx);if(ce)ce.textContent=sc.cmt;
     var me=document.getElementById("mk"+idx);if(me)me.textContent=sc.mk;
   });
+}
+// GENERATE
+function doGen(){
+  syncD();
+  var valid=rows.filter(function(r){return vld(r).length===0;});
+  if(!valid.length){
+    var allMiss=rows.map(function(r){return vld(r);}).filter(function(m){return m.length>0;});
+    var missing=allMiss.length?allMiss[0].join(", "):"unknown";
+    showToast("Field wajib belum diisi: <strong>"+missing+"</strong>","err",5000);return;
+  }
+  buildOut(valid);
   document.getElementById("outSec").style.display="block";
   document.getElementById("outSec").scrollIntoView({behavior:"smooth",block:"start"});
   showToast(valid.length+" script berhasil di-generate","ok",3000);
-  // Save state immediately after generate
+  // Simpan data row yang di-generate (bukan HTML) ke siteState
+  siteState[cur].genData=JSON.parse(JSON.stringify(valid));
   saveCurState();
   siteState[cur].outVis=true;
 }
