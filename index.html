@@ -913,31 +913,35 @@ body.light .modal-btn.cancel { background: #f1f5f9; color: #475569; border-color
     </div>
   </div>
 
-  <div class="card" id="migCard" style="display:none">
+  <div class="card" id="migCard" style="display:none;max-width:768px;margin:0 auto">
     <div class="card-hdr">
       <div class="card-title"><div class="cdot" style="background:var(--blue)"></div>&#128257; Pindah VLAN Masal (ZTE)</div>
     </div>
     <div class="card-body">
-      <div class="alert" style="margin-bottom:15px">
-        Copy data dari Excel dan paste di bawah ini. Pastikan format 3 Kolom: <code style="background:var(--s2);padding:2px 4px;border-radius:4px">GPON &nbsp;&nbsp;&nbsp; SN &nbsp;&nbsp;&nbsp; Username_PPPoE</code>
+      <div class="alert" style="margin-bottom:15px;display:inline-block">
+        <b>Format 3 Kolom dari Excel:</b> <code style="background:var(--s2);padding:2px 4px;border-radius:4px">GPON &nbsp;&nbsp;&nbsp; SN &nbsp;&nbsp;&nbsp; Username_PPPoE</code>
       </div>
-      <div class="fg" style="margin-bottom:15px;max-width:350px">
-        <div class="fl rq">Logika Site VLAN</div>
-        <select id="migVlanSel" class="ig" style="width:100%">
-          <option value="auto">Dinamis dari ID (Banyumas)</option>
-          <option value="168">VLAN 168 (HS 192)</option>
-          <option value="179">VLAN 179 (HS 190)</option>
-          <option value="180">VLAN 180 (HS 190)</option>
-          <option value="181">VLAN 181 (HS 191)</option>
-          <option value="182">VLAN 182 (HS 193)</option>
-          <option value="300">VLAN 300 (Kebumen)</option>
-          <option value="301">VLAN 301 (Cilacap)</option>
-          <option value="302">VLAN 302 (Rowokele)</option>
-          <option value="137">VLAN 137 (Karangputat)</option>
-        </select>
+      
+      <div style="display:flex;gap:12px;margin-bottom:12px;flex-wrap:wrap;align-items:flex-end">
+        <div class="fg" style="flex:1;min-width:200px;margin:0">
+          <div class="fl rq">Logika / Target VLAN</div>
+          <select id="migVlanSel" class="ig" style="width:100%">
+            <option value="auto">Dinamis dari ID (Banyumas)</option>
+            <option value="168">VLAN 168 (HS 192)</option>
+            <option value="179">VLAN 179 (HS 190)</option>
+            <option value="180">VLAN 180 (HS 190)</option>
+            <option value="181">VLAN 181 (HS 191)</option>
+            <option value="182">VLAN 182 (HS 193)</option>
+            <option value="300">VLAN 300 (Kebumen)</option>
+            <option value="301">VLAN 301 (Cilacap)</option>
+            <option value="302">VLAN 302 (Rowokele)</option>
+            <option value="137">VLAN 137 (Karangputat)</option>
+          </select>
+        </div>
+        <button class="btn bp" style="background:var(--blue);border-color:transparent;height:35px;padding:0 20px" onclick="doMigTab()">&#9889; Generate Script</button>
       </div>
-      <textarea id="migDataTab" style="width:100%;height:220px;border-radius:6px;border:1px solid var(--b2);background:var(--s1);color:var(--t1);padding:12px;font-family:var(--mono);font-size:13px;margin-bottom:15px;resize:vertical" placeholder="gpon-onu_1/12/1:1&#9;ZTEGCFEB2240&#9;816806928@bms.wifian.net.id"></textarea>
-      <button class="btn bp" style="background:var(--blue);border-color:transparent" onclick="doMigTab()">&#9889; Generate Script Pindah VLAN</button>
+      
+      <textarea id="migDataTab" style="width:100%;height:240px;border-radius:6px;border:1px solid var(--b2);background:var(--s1);color:var(--t1);padding:12px;font-family:var(--mono);font-size:13px;resize:vertical" placeholder="gpon-onu_1/12/1:1&#9;ZTEGCFEB2240&#9;816806928@bms.wifian.net.id"></textarea>
     </div>
   </div>
 
