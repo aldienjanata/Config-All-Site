@@ -906,6 +906,7 @@ body.light .modal-btn.cancel { background: #f1f5f9; color: #475569; border-color
       <div style="margin-top:11px;display:flex;gap:7px;flex-wrap:wrap;align-items:center">
         <button class="btn bp" onclick="doGen()">&#9889; Generate Script</button>
         <button class="btn bg bsm" onclick="addRow()">+ Tambah Baris</button>
+        <button class="btn bd bsm" onclick="openMig()" style="background:var(--blue);color:#fff;border-color:transparent">&#128257; Pindah VLAN Masal (Excel)</button>
         <span style="font-size:10px;color:var(--text2);font-family:var(--mono)">* = wajib &middot; Old PON = isi jika pindah</span>
       </div>
     </div>
@@ -1577,6 +1578,92 @@ function closeToast(id){
 
 // INIT
 rInfo();rTable();rCards();addRow();upCnt();
+
+// ── PINDAH VLAN MASAL ──
+function openMig(){
+  document.getElementById("migOverlay").classList.add("show");
+  document.getElementById("migData").value="";
+}
+function closeMig(){
+  document.getElementById("migOverlay").classList.remove("show");
+}
+function doMig(){
+  var raw=document.getElementById("migData").value.trim();
+  if(!raw){showToast("Paste data Excel terlebih dahulu!","warn");return;}
+  var lines=raw.split("\n");
+  var bms=cur==="banyumas"||S[cur].f==="bms";
+  var txt="conf t\n";
+  var cnt=0;
+  lines.forEach(function(l){
+    var cols=l.split("\t").map(function(x){return x.trim();});
+    if(cols.length<3) return;
+    var gpon=cols[0];
+    var sn=cols[1];
+    var user=cols[2];
+    var id=user.split("@")[0];
+    var pass=id;
+    
+    var vp,vh,pro;
+    if(bms){
+      vp=bvp(id); pro=bpr(vp); vh=bvh(pro);
+    }else{
+      vp=S[cur].vp||301;
+      vh=S[cur].vh||null;
+      pro=S[cur].pro||("PPPOE"+vp);
+      if(S[cur].f==="kbm"){vp=300;pro="PPPOE300";vh=null;}
+      if(S[cur].f==="rkw"){vp=302;pro="PPPOE302";vh=302;}
+      if(cur==="karangputat"){vp=137;pro="PPPOE137";vh=300;}
+    }
+    
+    var op=gpon.indexOf("gpon-onu_")===0?gpon:("gpon-onu_"+gpon);
+    txt+="!\ninterface "+op+"\n";
+    txt+="service-port 1 vport 1 user-vlan "+vp+" vlan "+vp+"\n";
+    if(vh) txt+="service-port 2 vport 2 user-vlan "+vh+" vlan "+vh+"\n";
+    txt+="exit\n";
+    txt+="pon-onu-mng "+op+"\n";
+    txt+="service PPP gemport 1 vlan "+vp+"\n";
+    if(vh) txt+="service HS gemport 2 vlan "+vh+"\n";
+    txt+="wan-ip 1 mode pppoe username "+user+" password "+pass+" vlan-profile "+pro+" host 1\n";
+    txt+="exit\n";
+    cnt++;
+  });
+  txt+="!\nend\n";
+  
+  if(cnt===0){showToast("Tidak ada data valid dengan 3 kolom (GPON, SN, User)!","err");return;}
+  
+  var html="<div class='rs-box zte'><div class='rs-hdr zte'>ZTE Script (Pindah VLAN)</div>"
+    +"<div class='rs-pre zte'><button class='cp' onclick='copyTxt(this.nextElementSibling)' title='Copy'>&#128203;</button><pre class='zte-text'>"+xe(txt)+"</pre></div></div>";
+  
+  document.getElementById("outSec").style.display="block";
+  document.getElementById("outCont").innerHTML=html;
+  document.getElementById("outSec").scrollIntoView({behavior:"smooth",block:"start"});
+  closeMig();
+  showToast("Berhasil membuat script Pindah VLAN untuk "+cnt+" ONU!","ok");
+}
 </script>
+
+<!-- MODAL PINDAH VLAN -->
+<div id="migOverlay" class="modal-overlay">
+  <div class="modal-box" style="max-width:500px;width:95%">
+    <div class="modal-title">&#128257; Pindah VLAN Masal (ZTE)</div>
+    <div class="modal-msg" style="margin-bottom:12px">
+      Copy data dari Excel dan paste di bawah ini.<br>
+      <b>Pastikan format 3 Kolom:</b> <code style="background:var(--s2);padding:2px 4px;border-radius:4px">GPON &nbsp;&nbsp;&nbsp; SN &nbsp;&nbsp;&nbsp; Username_PPPoE</code><br>
+      <small style="color:var(--text2)">(VLAN akan otomatis mengikuti logika Site yang aktif: <b><span id="migSiteNm"></span></b>)</small>
+    </div>
+    <textarea id="migData" style="width:100%;height:150px;border-radius:6px;border:1px solid var(--b2);background:var(--s1);color:var(--t1);padding:8px;font-family:var(--mono);font-size:12px;margin-bottom:15px;resize:vertical" placeholder="gpon-onu_1/12/1:1&#9;ZTEGCFEB2240&#9;816806928@bms.wifian.net.id"></textarea>
+    <div class="modal-actions">
+      <button class="modal-btn cancel" onclick="closeMig()">Batal</button>
+      <button class="modal-btn" style="background:var(--blue);color:#fff" onclick="doMig()">&#9889; Generate Script</button>
+    </div>
+  </div>
+</div>
+<script>
+  function _updMigSite(){ var e=document.getElementById("migSiteNm"); if(e)e.textContent=S[cur].l; }
+  var _origSetSite=setSite;
+  setSite=function(s){ _origSetSite(s); _updMigSite(); };
+  setTimeout(_updMigSite, 100);
+</script>
+
 </body>
 </html>
