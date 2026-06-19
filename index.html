@@ -910,7 +910,33 @@ body.light .modal-btn.cancel { background: #f1f5f9; color: #475569; border-color
         <span style="font-size:10px;color:var(--text2);font-family:var(--mono)">* = wajib &middot; Old PON = isi jika pindah</span>
       </div>
     </div>
+    </div>
   </div>
+
+  <div class="card" id="migCard" style="display:none">
+    <div class="card-hdr">
+      <div class="card-title"><div class="cdot" style="background:var(--blue)"></div>&#128257; Pindah VLAN Masal (ZTE)</div>
+    </div>
+    <div class="card-body">
+      <div class="alert" style="margin-bottom:15px">
+        Copy data dari Excel dan paste di bawah ini. Pastikan format 3 Kolom: <code style="background:var(--s2);padding:2px 4px;border-radius:4px">GPON &nbsp;&nbsp;&nbsp; SN &nbsp;&nbsp;&nbsp; Username_PPPoE</code>
+      </div>
+      <div class="fg" style="margin-bottom:15px;max-width:350px">
+        <div class="fl rq">Logika Site VLAN</div>
+        <select id="migSiteSel" class="ig" style="width:100%" onchange="updMigHint()">
+          <option value="banyumas">Banyumas (Dinamis dari ID)</option>
+          <option value="cilacap">Cilacap (VLAN 301)</option>
+          <option value="karangputat">Karangputat (VLAN 137)</option>
+          <option value="rowokele">Rowokele (VLAN 302)</option>
+          <option value="kebumen">Kebumen (VLAN 300)</option>
+          <option value="custom">Manual Custom (Auto)</option>
+        </select>
+      </div>
+      <textarea id="migDataTab" style="width:100%;height:220px;border-radius:6px;border:1px solid var(--b2);background:var(--s1);color:var(--t1);padding:12px;font-family:var(--mono);font-size:13px;margin-bottom:15px;resize:vertical" placeholder="gpon-onu_1/12/1:1&#9;ZTEGCFEB2240&#9;816806928@bms.wifian.net.id"></textarea>
+      <button class="btn bp" style="background:var(--blue);border-color:transparent" onclick="doMigTab()">&#9889; Generate Script Pindah VLAN</button>
+    </div>
+  </div>
+
   <div id="outSec" style="display:none">
     <div class="oh">
       <div class="ot">&#128203; Hasil Script Config</div>
