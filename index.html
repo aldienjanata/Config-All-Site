@@ -956,7 +956,6 @@ var CC=[
   {k:"suf",l:"ID (suffix)",p:"0437",c:"iid",rq:1,id:1},
   {k:"alamat",l:"Alamat/Desa",p:"DESA KARANGTAWANG",c:"iad",rq:1,minw:195},
   {k:"blok",l:"RT/RW/Blok",p:"RT 003 RW 004",c:"ibl",rq:1,minw:150},
-  {k:"pro",l:"Profile",p:"PPPOE",c:"ipro",rq:0,minw:80},
   {k:"paket",l:"Paket",c:"ipk",rq:1,sel:1},
   {k:"ot",l:"Tipe ONT",tgl:1}
 ];
@@ -970,7 +969,6 @@ var RC=[
   {k:"nohp",l:"No HP",p:"0858...",c:"ihp",rq:1,minw:125},
   {k:"perum",l:"Perumahan/Alamat",p:"RT 003 DESA ...",c:"iad",rq:1,minw:195},
   {k:"suf",l:"ID (suffix)",p:"1205",c:"iid",rq:1,id:1},
-  {k:"pro",l:"Profile",p:"PPPOE",c:"ipro",rq:0,minw:80},
   {k:"paket",l:"Paket",c:"ipk",rq:1,sel:1},
   {k:"ot",l:"Tipe ONT",tgl:1}
 ];
@@ -1150,7 +1148,6 @@ function aCard(row,idx,pfx){
     h2+="<div class='fg full'><div class='fl rq'>Alamat/Desa</div><input type='text' data-id='"+rid+"' data-key='alamat' data-minw='195' value='"+(row.alamat||"")+"' placeholder='"+(sitePH[cur].alamat||'DESA KARANGTAWANG')+"' oninput='uc(this);autoW(this)'></div>";
     h2+="<div class='fg full'><div class='fl rq'>RT/RW/Blok</div><input type='text' data-id='"+rid+"' data-key='blok' data-minw='150' value='"+(row.blok||"")+"' placeholder='"+(sitePH[cur].blok||'RT 003 RW 004')+"' oninput='uc(this);autoW(this)'></div>";
   }
-  h2+="<div class='fg full'><div class='fl'>Profile</div><input type='text' data-id='"+rid+"' data-key='pro' data-minw='80' value='"+(row.pro||"")+"' placeholder='"+(sitePH[cur].pro||'PPPOE')+"' oninput='uc(this);autoW(this)'></div>";
   h2+="<div class='fg full'><div class='fl rq'>ID Pelanggan (suffix)</div>";
   h2+="<div class='idw'><span class='idp'>"+pfx+"</span>";
   h2+="<input type='text' data-id='"+rid+"' data-key='suf' value='"+(row.suf||"")+"' placeholder='"+(sitePH[cur].suf||(rkw?"1205":"0437"))+"' oninput='uc(this)'></div></div>";
@@ -1233,7 +1230,6 @@ function gpar(row){
     if(s.dom&&s.dom!=="") dom=s.dom;
     if(s.suf&&s.suf!=="") suf=s.suf;
   }
-  if(row.pro&&row.pro.trim()!=="")pro=row.pro.trim();
   return{vp:vp,vh:vh,pro:pro,dom:dom,suf:suf,id:id};
 }
 
