@@ -923,13 +923,17 @@ body.light .modal-btn.cancel { background: #f1f5f9; color: #475569; border-color
       </div>
       <div class="fg" style="margin-bottom:15px;max-width:350px">
         <div class="fl rq">Logika Site VLAN</div>
-        <select id="migSiteSel" class="ig" style="width:100%" onchange="updMigHint()">
-          <option value="banyumas">Banyumas (Dinamis dari ID)</option>
-          <option value="cilacap">Cilacap (VLAN 301)</option>
-          <option value="karangputat">Karangputat (VLAN 137)</option>
-          <option value="rowokele">Rowokele (VLAN 302)</option>
-          <option value="kebumen">Kebumen (VLAN 300)</option>
-          <option value="custom">Manual Custom (Auto)</option>
+        <select id="migVlanSel" class="ig" style="width:100%">
+          <option value="auto">Dinamis dari ID (Banyumas)</option>
+          <option value="168">VLAN 168 (HS 192)</option>
+          <option value="179">VLAN 179 (HS 190)</option>
+          <option value="180">VLAN 180 (HS 190)</option>
+          <option value="181">VLAN 181 (HS 191)</option>
+          <option value="182">VLAN 182 (HS 193)</option>
+          <option value="300">VLAN 300 (Kebumen)</option>
+          <option value="301">VLAN 301 (Cilacap)</option>
+          <option value="302">VLAN 302 (Rowokele)</option>
+          <option value="137">VLAN 137 (Karangputat)</option>
         </select>
       </div>
       <textarea id="migDataTab" style="width:100%;height:220px;border-radius:6px;border:1px solid var(--b2);background:var(--s1);color:var(--t1);padding:12px;font-family:var(--mono);font-size:13px;margin-bottom:15px;resize:vertical" placeholder="gpon-onu_1/12/1:1&#9;ZTEGCFEB2240&#9;816806928@bms.wifian.net.id"></textarea>
@@ -1623,9 +1627,8 @@ function doMigTab(){
   var raw=document.getElementById("migDataTab").value.trim();
   if(!raw){showToast("Paste data Excel terlebih dahulu!","warn");return;}
   var lines=raw.split("\n");
-  var siteLog=document.getElementById("migSiteSel").value;
-  var bms=siteLog==="banyumas"||(S[siteLog]&&S[siteLog].f==="bms");
-  var txt="conf t\n";
+  var sel=document.getElementById("migVlanSel").value;
+  var txt="conf t\n\n";
   var cnt=0;
   lines.forEach(function(l){
     var cols=l.split("\t").map(function(x){return x.trim();});
@@ -1637,20 +1640,24 @@ function doMigTab(){
     var pass=id;
     
     var vp,vh,pro;
-    if(bms){
+    if(sel==="auto"){
       vp=bvp(id); pro=bpr(vp); vh=bvh(pro);
+    }else if(sel==="301"){
+      vp=301; pro="pppoe"; vh=300;
+    }else if(sel==="300"){
+      vp=300; pro="PPPOE300"; vh=null;
+    }else if(sel==="302"){
+      vp=302; pro="PPPOE302"; vh=302;
+    }else if(sel==="137"){
+      vp=137; pro="PPPOE137"; vh=300;
     }else{
-      var S_ref=S[siteLog];
-      vp=S_ref.vp||301;
-      vh=S_ref.vh||null;
-      pro=S_ref.pro||("PPPOE"+vp);
-      if(S_ref.f==="kbm"){vp=300;pro="PPPOE300";vh=null;}
-      if(S_ref.f==="rkw"){vp=302;pro="PPPOE302";vh=302;}
-      if(siteLog==="karangputat"){vp=137;pro="PPPOE137";vh=300;}
+      vp=parseInt(sel);
+      pro=bpr(vp);
+      vh=bvh(pro);
     }
     
     var op=gpon.indexOf("gpon-onu_")===0?gpon:("gpon-onu_"+gpon);
-    txt+="!\ninterface "+op+"\n";
+    txt+="interface "+op+"\n";
     txt+="service-port 1 vport 1 user-vlan "+vp+" vlan "+vp+"\n";
     if(vh) txt+="service-port 2 vport 2 user-vlan "+vh+" vlan "+vh+"\n";
     txt+="exit\n";
@@ -1658,10 +1665,10 @@ function doMigTab(){
     txt+="service PPP gemport 1 vlan "+vp+"\n";
     if(vh) txt+="service HS gemport 2 vlan "+vh+"\n";
     txt+="wan-ip 1 mode pppoe username "+user+" password "+pass+" vlan-profile "+pro+" host 1\n";
-    txt+="exit\n";
+    txt+="exit\n\n";
     cnt++;
   });
-  txt+="!\nend\n";
+  txt+="end\n";
   
   if(cnt===0){showToast("Tidak ada data valid dengan 3 kolom (GPON, SN, User)!","err");return;}
   
