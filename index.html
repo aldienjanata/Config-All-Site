@@ -914,74 +914,71 @@ body.light .modal-btn.cancel { background: #f1f5f9; color: #475569; border-color
   </div>
 
   <div class="card" id="migCard" style="display:none">
-    <div class="card-hdr" style="background:linear-gradient(135deg,#1a237e 0%,#283593 50%,#1565c0 100%);border-radius:10px 10px 0 0;padding:16px 20px">
+    <div class="card-hdr" style="background:linear-gradient(135deg,#1a237e 0%,#283593 50%,#1565c0 100%);border-radius:10px 10px 0 0;padding:14px 20px">
       <div class="card-title" style="color:#fff;font-size:15px;font-weight:700;display:flex;align-items:center;gap:10px">
         <div style="width:8px;height:8px;border-radius:50%;background:#64b5f6;box-shadow:0 0 8px #64b5f6"></div>
         &#128257; Pindah VLAN Masal
         <span style="background:rgba(255,255,255,0.15);border:1px solid rgba(255,255,255,0.25);color:#e3f2fd;font-size:10px;font-weight:600;padding:2px 8px;border-radius:20px;letter-spacing:1px">ZTE OLT</span>
       </div>
     </div>
-    <div class="card-body" style="padding:0">
-      <div style="display:grid;grid-template-columns:320px 1fr;min-height:520px">
+    <div style="display:flex;min-height:520px">
 
-        <!-- LEFT: Input Panel -->
-        <div style="padding:20px;border-right:1px solid var(--b2)">
-          <div style="margin-bottom:16px">
-            <div style="font-size:11px;font-weight:700;color:var(--text2);text-transform:uppercase;letter-spacing:1px;margin-bottom:10px">&#9881; Konfigurasi</div>
-            <div style="background:var(--s2);border:1px solid var(--b2);border-radius:8px;padding:10px 14px;margin-bottom:14px">
-              <div style="font-size:11px;color:var(--text2);margin-bottom:4px">&#128196; Format 3 Kolom dari Excel</div>
-              <code style="font-size:11px;color:#64b5f6;font-family:var(--mono)">GPON &nbsp;&#9;SN &nbsp;&#9;Username_PPPoE</code>
-            </div>
-            <div style="display:flex;gap:8px;margin-bottom:12px;align-items:center">
-              <select id="migVlanSel" class="ig" style="flex:1;font-size:12px">
-                <option value="auto">&#128257; Dinamis (Banyumas)</option>
-                <option value="168">VLAN 168 — HS 192</option>
-                <option value="179">VLAN 179 — HS 190</option>
-                <option value="180">VLAN 180 — HS 190</option>
-                <option value="181">VLAN 181 — HS 191</option>
-                <option value="182">VLAN 182 — HS 193</option>
-                <option value="300">VLAN 300 — Kebumen</option>
-                <option value="301">VLAN 301 — Cilacap</option>
-                <option value="302">VLAN 302 — Rowokele</option>
-                <option value="137">VLAN 137 — Karangputat</option>
-              </select>
-            </div>
-
-          <div style="margin-bottom:14px">
-            <label style="font-size:11px;font-weight:600;color:var(--text2);text-transform:uppercase;letter-spacing:0.5px;display:block;margin-bottom:6px">Data Pelanggan <span style="color:#ef5350">*</span></label>
-            <textarea id="migDataTab" style="width:100%;height:230px;border-radius:6px;border:1px solid var(--b2);background:var(--s1);color:var(--t1);padding:12px;font-family:var(--mono);font-size:12px;resize:none;line-height:1.6;box-sizing:border-box" placeholder="Paste dari Excel (3 kolom):
-gpon-onu_1/5/8:103&#9;ZTEGCF8F9B6C&#9;816805981@bms.wifian.net.id
-gpon-onu_1/5/8:104&#9;ZTEGCF123456&#9;816805982@bms.wifian.net.id"></textarea>
-          </div>
-
-          <div style="display:flex;gap:8px;align-items:center">
-            <button class="btn bp" style="background:linear-gradient(135deg,#1565c0,#1976d2);border:none;flex:1;height:36px;font-size:12px;font-weight:600;border-radius:7px;cursor:pointer" onclick="doMigTab()">&#9889; Generate Script</button>
-            <button class="btn" style="background:var(--s2);border:1px solid var(--b2);color:var(--text2);height:36px;width:36px;border-radius:7px;cursor:pointer;font-size:13px" onclick="document.getElementById('migDataTab').value='';document.getElementById('migEmptyState').style.display='flex';document.getElementById('migZtePre').textContent='';document.getElementById('migCopyBtn').style.display='none';document.getElementById('migONUCount').style.display='none';" title="Bersihkan">&#10005;</button>
-          </div>
+      <!-- LEFT: Input Panel -->
+      <div style="width:300px;min-width:300px;padding:18px;border-right:1px solid var(--b2);display:flex;flex-direction:column;gap:12px">
+        <div style="background:var(--s2);border:1px solid var(--b2);border-radius:7px;padding:9px 12px">
+          <div style="font-size:10px;color:var(--text2);margin-bottom:3px">&#128196; Format 3 Kolom dari Excel</div>
+          <code style="font-size:11px;color:#64b5f6;font-family:var(--mono)">GPON&nbsp;&#9;SN&nbsp;&#9;Username</code>
         </div>
-
-        <!-- RIGHT: Output Panel -->
-        <div id="migOutPanel" style="display:flex;flex-direction:column">
-          <div style="padding:12px 16px;border-bottom:1px solid var(--b2);display:flex;align-items:center;justify-content:space-between;background:var(--s2)">
-            <div style="font-size:11px;font-weight:700;color:var(--text2);text-transform:uppercase;letter-spacing:1px">&#128203; Hasil Script ZTE</div>
-            <div style="display:flex;gap:6px;align-items:center">
-              <span id="migONUCount" style="background:var(--blue);color:#fff;font-size:10px;font-weight:700;padding:2px 8px;border-radius:12px;display:none">0 ONU</span>
-              <button id="migCopyBtn" onclick="copyTxt(document.getElementById('migZtePre'))" style="background:var(--blue);color:#fff;border:none;border-radius:6px;padding:5px 12px;font-size:11px;font-weight:600;cursor:pointer;display:none">&#128203; Copy</button>
-            </div>
-          </div>
-          <div style="flex:1;position:relative">
-            <div id="migEmptyState" style="position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;color:var(--text2);gap:8px">
-              <div style="font-size:32px;opacity:0.3">&#128257;</div>
-              <div style="font-size:12px;opacity:0.5">Script akan muncul di sini</div>
-              <div style="font-size:11px;opacity:0.35">Paste data & klik Generate</div>
-            </div>
-            <pre id="migZtePre" style="margin:0;padding:16px;font-family:var(--mono);font-size:12px;line-height:1.7;color:#e0f2fe;background:transparent;overflow:auto;height:100%;box-sizing:border-box;white-space:pre"></pre>
-          </div>
+        <div>
+          <label style="font-size:10px;font-weight:700;color:var(--text2);text-transform:uppercase;letter-spacing:0.5px;display:block;margin-bottom:5px">Target VLAN</label>
+          <select id="migVlanSel" class="ig" style="width:100%;font-size:12px">
+            <option value="auto">&#128257; Dinamis (Banyumas)</option>
+            <option value="168">VLAN 168 &mdash; HS 192</option>
+            <option value="179">VLAN 179 &mdash; HS 190</option>
+            <option value="180">VLAN 180 &mdash; HS 190</option>
+            <option value="181">VLAN 181 &mdash; HS 191</option>
+            <option value="182">VLAN 182 &mdash; HS 193</option>
+            <option value="300">VLAN 300 &mdash; Kebumen</option>
+            <option value="301">VLAN 301 &mdash; Cilacap</option>
+            <option value="302">VLAN 302 &mdash; Rowokele</option>
+            <option value="137">VLAN 137 &mdash; Karangputat</option>
+          </select>
         </div>
-
+        <div style="flex:1;display:flex;flex-direction:column">
+          <label style="font-size:10px;font-weight:700;color:var(--text2);text-transform:uppercase;letter-spacing:0.5px;display:block;margin-bottom:5px">Data Pelanggan *</label>
+          <textarea id="migDataTab" style="flex:1;min-height:300px;border-radius:6px;border:1px solid var(--b2);background:var(--s1);color:var(--t1);padding:10px;font-family:var(--mono);font-size:11px;resize:none;line-height:1.6;box-sizing:border-box" placeholder="Paste dari Excel:
+gpon-onu_1/5/8:103&#9;ZTEG...&#9;816805981@bms.wifian.net.id"></textarea>
+        </div>
+        <div style="display:flex;gap:8px">
+          <button class="btn bp" style="background:linear-gradient(135deg,#1565c0,#1976d2);border:none;flex:1;height:36px;font-size:12px;font-weight:600;border-radius:7px" onclick="doMigTab()">&#9889; Generate</button>
+          <button title="Clear" style="background:var(--s2);border:1px solid var(--b2);color:var(--text2);height:36px;width:36px;border-radius:7px;cursor:pointer;font-size:14px" onclick="document.getElementById('migDataTab').value='';document.getElementById('migEmptyState').style.display='flex';document.getElementById('migZtePre').textContent='';document.getElementById('migCopyBtn').style.display='none';document.getElementById('migONUCount').style.display='none';">&#10005;</button>
+        </div>
       </div>
+
+      <!-- RIGHT: Output Panel -->
+      <div style="flex:1;display:flex;flex-direction:column;min-width:0">
+        <div style="padding:10px 16px;border-bottom:1px solid var(--b2);display:flex;align-items:center;justify-content:space-between;background:var(--s2)">
+          <div style="font-size:10px;font-weight:700;color:var(--text2);text-transform:uppercase;letter-spacing:1px">&#128203; Hasil Script ZTE</div>
+          <div style="display:flex;gap:6px;align-items:center">
+            <span id="migONUCount" style="background:var(--blue);color:#fff;font-size:10px;font-weight:700;padding:2px 8px;border-radius:12px;display:none">0 ONU</span>
+            <button id="migCopyBtn" onclick="copyTxt(document.getElementById('migZtePre'))" style="background:var(--blue);color:#fff;border:none;border-radius:6px;padding:5px 12px;font-size:11px;font-weight:600;cursor:pointer;display:none">&#128203; Copy</button>
+          </div>
+        </div>
+        <div style="flex:1;position:relative;overflow:auto">
+          <div id="migEmptyState" style="position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;color:var(--text2);gap:8px;pointer-events:none">
+            <div style="font-size:32px;opacity:0.3">&#128257;</div>
+            <div style="font-size:12px;opacity:0.5">Script akan muncul di sini</div>
+            <div style="font-size:11px;opacity:0.35">Paste data &amp; klik Generate</div>
+          </div>
+          <pre id="migZtePre" style="margin:0;padding:16px;font-family:var(--mono);font-size:12px;line-height:1.7;color:#e0f2fe;overflow:auto;white-space:pre"></pre>
+        </div>
+      </div>
+
     </div>
   </div>
+
+
+
 
   <div id="outSec" style="display:none">
     <div class="oh">
@@ -1442,11 +1439,19 @@ function doGen(){
   buildOut(valid);
   var os=document.getElementById("outSec");
   var oh=document.querySelector("#outSec .oh");
-  if(oh) oh.style.display="flex";
-  if(os) os.style.display="block";
+  if(oh){oh.style.display="flex";oh.style.visibility="visible";}
+  if(os){
+    os.style.display="block";
+    os.style.visibility="visible";
+    os.removeAttribute("hidden");
+  }
   setTimeout(function(){
-    if(os) os.scrollIntoView({behavior:"smooth",block:"start"});
-  },100);
+    var os2=document.getElementById("outSec");
+    if(os2){
+      os2.style.display="block";
+      os2.scrollIntoView({behavior:"smooth",block:"start"});
+    }
+  },150);
   showToast(valid.length+" script berhasil di-generate","ok",3000);
   siteState[cur].genData=JSON.parse(JSON.stringify(valid));
   saveCurState();
