@@ -1662,10 +1662,15 @@ function doMigTab(){
     
     var op=gpon.indexOf("gpon-onu_")===0?gpon:("gpon-onu_"+gpon);
     txt+="interface "+op+"\n";
+    txt+="no service-port 1\n";
+    txt+="no service-port 2\n";
     txt+="service-port 1 vport 1 user-vlan "+vp+" vlan "+vp+"\n";
     if(vh) txt+="service-port 2 vport 2 user-vlan "+vh+" vlan "+vh+"\n";
     txt+="exit\n";
     txt+="pon-onu-mng "+op+"\n";
+    txt+="no wan-ip 1\n";
+    txt+="no service PPP gemport 1\n";
+    txt+="no service HS gemport 2\n";
     txt+="service PPP gemport 1 vlan "+vp+"\n";
     if(vh) txt+="service HS gemport 2 vlan "+vh+"\n";
     txt+="wan-ip 1 mode pppoe username "+user+" password "+pass+" vlan-profile "+pro+" host 1\n";
@@ -1683,6 +1688,12 @@ function doMigTab(){
   document.getElementById("outCont").innerHTML=html;
   document.getElementById("outSec").scrollIntoView({behavior:"smooth",block:"start"});
   showToast("Berhasil membuat script Pindah VLAN untuk "+cnt+" ONU!","ok");
+}
+function copyTxt(el){
+  if(!el)return;
+  navigator.clipboard.writeText(el.textContent).then(function(){
+    showToast("Script berhasil disalin!","ok");
+  });
 }
 function updMigHint(){
   // optional: add logic to show hints based on selected logic
