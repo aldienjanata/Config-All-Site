@@ -1079,6 +1079,8 @@ function setSite(s){
     document.getElementById("migCard").style.display="none";
     document.getElementById("mainCard").style.display="block";
     document.getElementById("sinfo").style.display="flex";
+    var oh=document.querySelector("#outSec .oh");
+    if(oh) oh.style.display="flex"; // restore global copy buttons
   }
 
   // 4. Load rows
@@ -1669,8 +1671,8 @@ function doMigTab(){
     txt+="exit\n";
     txt+="pon-onu-mng "+op+"\n";
     txt+="no wan-ip 1\n";
-    txt+="no service PPP gemport 1\n";
-    txt+="no service HS gemport 2\n";
+    txt+="no service PPP\n";
+    if(vh) txt+="no service HS\n";
     txt+="service PPP gemport 1 vlan "+vp+"\n";
     if(vh) txt+="service HS gemport 2 vlan "+vh+"\n";
     txt+="wan-ip 1 mode pppoe username "+user+" password "+pass+" vlan-profile "+pro+" host 1\n";
@@ -1682,7 +1684,11 @@ function doMigTab(){
   if(cnt===0){showToast("Tidak ada data valid dengan 3 kolom (GPON, SN, User)!","err");return;}
   
   var html="<div class='rs-box zte'><div class='rs-hdr zte'>ZTE Script (Pindah VLAN)</div>"
-    +"<div class='rs-pre zte'><button class='cp' onclick='copyTxt(this.nextElementSibling)' title='Copy'>&#128203;</button><pre class='zte-text'>"+xe(txt)+"</pre></div></div>";
+    +"<div style='padding:10px;background:var(--s2);border-bottom:1px solid var(--b2)'><button class='btn bp' onclick='copyTxt(document.getElementById(\"migZtePre\"))'>&#128203; Copy Script ZTE</button></div>"
+    +"<div class='rs-pre zte'><pre class='zte-text' id='migZtePre' style='margin:0'>"+xe(txt)+"</pre></div></div>";
+  
+  var oh=document.querySelector("#outSec .oh");
+  if(oh) oh.style.display="none"; // hide global copy buttons
   
   document.getElementById("outSec").style.display="block";
   document.getElementById("outCont").innerHTML=html;
