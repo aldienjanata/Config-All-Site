@@ -1440,10 +1440,14 @@ function doGen(){
     showToast("Field wajib belum diisi: <strong>"+missing+"</strong>","err",5000);return;
   }
   buildOut(valid);
-  document.getElementById("outSec").style.display="block";
-  document.getElementById("outSec").scrollIntoView({behavior:"smooth",block:"start"});
+  var os=document.getElementById("outSec");
+  var oh=document.querySelector("#outSec .oh");
+  if(oh) oh.style.display="flex";
+  if(os) os.style.display="block";
+  setTimeout(function(){
+    if(os) os.scrollIntoView({behavior:"smooth",block:"start"});
+  },100);
   showToast(valid.length+" script berhasil di-generate","ok",3000);
-  // Simpan data row yang di-generate (bukan HTML) ke siteState
   siteState[cur].genData=JSON.parse(JSON.stringify(valid));
   saveCurState();
   siteState[cur].outVis=true;
