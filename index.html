@@ -932,9 +932,9 @@ var S={
   karangputat:{l:"Karangputat",pfx:"81680",dom:"@clp.wifian.net.id",vp:137,vh:300,pro:"PPPOE137",f:"clp",suf:"",ac:"config t",
     info:[["VLAN PPPoE","137"],["VLAN HS","300"],["Profile","PPPOE137"],["Domain","@clp.wifian.net.id"],["Prefix","81680..."]],
     hint:"Prefix ID 81680 | @clp.wifian.net.id | Contoh: 816800211 cukup isi 0211"},
-  banyumas:{l:"Banyumas",pfx:"81680",dom:"@bms.wifian.net.id",f:"clp",suf:"",ac:"conf t",
+  banyumas:{l:"Banyumas",pfx:"81680",dom:"@bms.wifian.net.id",f:"bms",suf:"",ac:"conf t",
     info:[["VLAN PPPoE","Dinamis"],["VLAN HS","Dinamis"],["Profile","Dinamis"],["Domain","@bms.wifian.net.id"],["Prefix","81680..."]],
-    hint:"Prefix ID 81680 | @bms.wifian.net.id | VLAN & Profile otomatis dari ID"},
+    hint:"Prefix ID 81680 | @bms.wifian.net.id | VLAN & Profile otomatis dari ID. Kolom VLAN bisa diisi manual untuk override."},
   rowokele:{l:"Rowokele",pfx:"54320",dom:"@rkw.wifian.net.id",vp:302,pro:"PPPOE302",f:"rkw",suf:"@RKW",ac:"config t",
     info:[["VLAN PPPoE","302"],["Profile","PPPOE302"],["Domain","@rkw.wifian.net.id"],["Prefix","54320..."]],
     hint:"Prefix ID 54320 | @rkw.wifian.net.id | Contoh: 543201205 cukup isi 1205"},
@@ -1000,9 +1000,9 @@ function uu(s){return(s||"").toUpperCase();}
 function xe(s){return(s||"").replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;");}
 
 // BANYUMAS
-function bvp(id){var n=parseInt(id)||0;if(n>=816804001&&n<=816805500)return 179;if(n>816804000)return 180;if(n>816802000)return 181;if(n===816802912)return 180;if(n>816800000)return 168;if(n===81680084||n===81680)return 168;if(n===8168)return 181;return 182;}
-function bpr(v){return{168:"PPPOE",169:"PPPOE02",179:"PPPOE179",180:"PPPOE180",181:"PPPOE181",182:"PPPOE182"}[v]||"PPPOE183";}
-function bvh(p){return{"PPPOE":192,"PPPOE179":190,"PPPOE180":190,"PPPOE181":191}[p]||193;}
+function bvp(id){var n=parseInt(id)||0;if(n>=816808001&&n<=816810000)return 182;if(n>=816805501&&n<=816808000)return 180;if(n>=816804001&&n<=816805500)return 179;if(n>=816802001&&n<=816804000)return 181;if(n>=816800001&&n<=816802000)return 168;return 168;}
+function bpr(v){return{168:"PPPOE168",179:"PPPOE179",180:"PPPOE180",181:"PPPOE181",182:"PPPOE182"}[v]||"PPPOE168";}
+function bvh(p){return{"PPPOE168":192,"PPPOE179":190,"PPPOE180":190,"PPPOE181":191,"PPPOE182":193}[p]||192;}
 
 // THEME
 function toggleTheme(){
@@ -1078,7 +1078,11 @@ function rInfo(){
 // TABLE
 function rTable(){
   var cols=gc(),pfx=getPfx();
-  document.getElementById("tHead").innerHTML="<tr><th>#</th>"+cols.map(function(c){return"<th class='"+(c.rq?"rq":"")+"'>"+(c.l)+"</th>";}).join("")+"<th></th></tr>";
+  var bms=cur==="banyumas"||S[cur].f==="bms";
+  var hdr="<tr><th>#</th>"+cols.map(function(c){return"<th class='"+(c.rq?"rq":"")+"'>"+(c.l)+"</th>";}).join("");
+  if(bms) hdr+="<th title='Isi jika VLAN tidak sesuai otomatis'>VLAN</th>";
+  hdr+="<th></th></tr>";
+  document.getElementById("tHead").innerHTML=hdr;
   var tb=document.getElementById("tBody");tb.innerHTML="";
   rows.forEach(function(r,i){aTr(r,i,cols,pfx);});
 }
@@ -1121,11 +1125,14 @@ function aTr(row,idx,cols,pfx){
       h2+="<td><input type='text' class='"+(c.c||"")+"'"+(c.minw?" data-minw='"+c.minw+"'":"")+" data-id='"+rid+"' data-key='"+c.k+"' value='"+(row[c.k]||"")+"' placeholder='"+getPH(c.k,c.p||"")+"'"+(c.minw?" style='width:"+(Math.max(c.minw,(row[c.k]||getPH(c.k,c.p||"")||'').length*7+18))+"px'":"")+" oninput='uc(this)"+(c.minw?";autoW(this)":"")+"'></td>";
     }
   });
+  if(cur==="banyumas"||S[cur].f==="bms"){
+    h2+="<td><input type='text' data-id='"+row.id+"' data-key='vp' value='"+(row.vp||"")+"' placeholder='Auto' style='width:54px;text-align:center' title='Override VLAN PPPoE' oninput='uc(this)'></td>";
+  }
   h2+="<td><button class='btn bd bsm' onclick='remRow("+row.id+")'>&#10005;</button></td>";
   tr.innerHTML=h2;document.getElementById("tBody").appendChild(tr);
 }
 function aCard(row,idx,pfx){
-  var rkw=S[cur].f==="rkw",z=row.ot!=="aon",rid=row.id;
+  var rkw=S[cur].f==="rkw",bms=cur==="banyumas"||S[cur].f==="bms",z=row.ot!=="aon",rid=row.id;
   var nm=row.nama||("Pelanggan "+(idx+1));
   var d=document.createElement("div");d.className="mc";d.id="mc-"+rid;
   var h2="<div class='mchd'><div class='mcn'>"+(idx+1)+"</div>";
@@ -1148,6 +1155,9 @@ function aCard(row,idx,pfx){
   h2+="<div class='fg full'><div class='fl rq'>ID Pelanggan (suffix)</div>";
   h2+="<div class='idw'><span class='idp'>"+pfx+"</span>";
   h2+="<input type='text' data-id='"+rid+"' data-key='suf' value='"+(row.suf||"")+"' placeholder='"+(sitePH[cur].suf||(rkw?"1205":"0437"))+"' oninput='uc(this)'></div></div>";
+  if(bms){
+    h2+="<div class='fg'><div class='fl' style='color:#f9a825;font-size:11px'>VLAN PPPoE <small>(override, kosong=auto)</small></div><input type='text' data-id='"+rid+"' data-key='vp' value='"+(row.vp||"")+"' placeholder='Auto' style='width:70px' title='Isi manual jika VLAN tidak sesuai range otomatis' oninput='uc(this)'></div>";
+  }
   var opts=PKT.map(function(p){return"<option"+(row.paket===p?" selected":"")+">"+p+"</option>";}).join("");
   h2+="<div class='fg full'><div class='fl rq'>Paket</div><select data-id='"+rid+"' data-key='paket' onchange='uc(this)'>"+opts+"</select></div>";
   h2+="</div>";
@@ -1207,6 +1217,7 @@ function gpar(row){
   if(cur==="banyumas"||s.f==="bms"){
     vp=bvp(id);pro=bpr(vp);vh=bvh(pro);
     dom="@bms.wifian.net.id"; suf="";
+    if(row.vp&&row.vp.toString().trim()!==""){vp=parseInt(row.vp)||vp;pro=bpr(vp);vh=bvh(pro);}
   }else if(s.f==="kbm"){
     vp=300; pro="PPPOE300"; vh=null;
     dom="@kbm.wifian.net.id"; suf="@KBM";
