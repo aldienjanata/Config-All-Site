@@ -1209,11 +1209,32 @@ window.addEventListener("resize",function(){rCards();});
 
 // PARAMS
 function gpar(row){
-  var s=S[cur],id=fid(row),vp,vh,pro;
-  if(cur==="banyumas"||s.f==="bms"){vp=bvp(id);pro=bpr(vp);vh=bvh(pro);}
-  else{vp=s.vp;vh=s.vh||null;pro=s.pro;}
+  var s=S[cur],id=fid(row),vp,vh,pro,dom,suf;
+  if(cur==="banyumas"||s.f==="bms"){
+    vp=bvp(id);pro=bpr(vp);vh=bvh(pro);
+    dom="@bms.wifian.net.id"; suf="";
+  }else if(s.f==="rkw"){
+    vp=302; pro="PPPOE302"; vh=302;
+    dom="@rkw.wifian.net.id"; suf="@RKW";
+  }else{ // clp
+    vp=301; pro="PPPOE"; vh=null;
+    dom="@clp.wifian.net.id"; suf="";
+  }
+  if(cur!=="custom"){
+    if(s.vp!==undefined) vp=s.vp;
+    if(s.pro!==undefined) pro=s.pro;
+    if(s.vh!==undefined) vh=s.vh;
+    if(s.dom!==undefined) dom=s.dom;
+    if(s.suf!==undefined) suf=s.suf;
+  }else{
+    if(s.vp&&s.vp!=="") vp=s.vp;
+    if(s.pro&&s.pro!=="") pro=s.pro;
+    if(s.vh&&s.vh!=="") vh=s.vh;
+    if(s.dom&&s.dom!=="") dom=s.dom;
+    if(s.suf&&s.suf!=="") suf=s.suf;
+  }
   if(row.pro&&row.pro.trim()!=="")pro=row.pro.trim();
-  return{vp:vp,vh:vh,pro:pro,dom:s.dom,suf:s.suf,id:id};
+  return{vp:vp,vh:vh,pro:pro,dom:dom,suf:suf,id:id};
 }
 
 // SCRIPT GEN CLP
