@@ -1227,11 +1227,13 @@ function gpar(row){
     if(s.dom!==undefined) dom=s.dom;
     if(s.suf!==undefined) suf=s.suf;
   }else{
-    if(s.vp&&s.vp!=="") vp=s.vp;
-    if(s.pro&&s.pro!=="") pro=s.pro;
-    if(s.vh&&s.vh!=="") vh=s.vh;
-    if(s.dom&&s.dom!=="") dom=s.dom;
-    if(s.suf&&s.suf!=="") suf=s.suf;
+    if(s.vp&&s.vp!==""){
+      vp=parseInt(s.vp)||s.vp;
+      if(s.f==="bms") pro=bpr(vp);
+      else if(s.f==="clp") pro="PPPOE";
+      else pro="PPPOE"+vp;
+    }
+    if(s.vh&&s.vh!=="") vh=parseInt(s.vh)||s.vh;
   }
   return{vp:vp,vh:vh,pro:pro,dom:dom,suf:suf,id:id};
 }
