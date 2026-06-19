@@ -888,7 +888,7 @@ body.light .modal-btn.cancel { background: #f1f5f9; color: #475569; border-color
     <div class="tab" onclick="setSite('banyumas')" id="tab-banyumas">Banyumas <span class="vb">DYNAMIC</span></div>
     <div class="tab" onclick="setSite('rowokele')" id="tab-rowokele">Rowokele <span class="vb">302</span></div>
     <div class="tab" onclick="setSite('kebumen')" id="tab-kebumen">Kebumen <span class="vb">300</span></div>
-    <div class="tab" onclick="setSite('custom')" id="tab-custom">Custom <span class="vb">&#9881;</span></div>
+    <div class="tab" onclick="setSite('custom')" id="tab-custom" style="display:none"></div>
     <div class="tab" onclick="setSite('pindah')" id="tab-pindah" style="background:var(--blue);color:#fff;border-color:transparent;margin-left:10px">Pindah VLAN <span class="vb" style="background:rgba(0,0,0,.2);color:#fff">&#128257;</span></div>
   </div>
   <div class="sinfo" id="sinfo"></div>
@@ -922,7 +922,7 @@ body.light .modal-btn.cancel { background: #f1f5f9; color: #475569; border-color
       </div>
     </div>
     <div class="card-body" style="padding:0">
-      <div style="display:grid;grid-template-columns:1fr 1fr;min-height:480px">
+      <div style="display:grid;grid-template-columns:320px 1fr;min-height:520px">
 
         <!-- LEFT: Input Panel -->
         <div style="padding:20px;border-right:1px solid var(--b2)">
@@ -932,22 +932,20 @@ body.light .modal-btn.cancel { background: #f1f5f9; color: #475569; border-color
               <div style="font-size:11px;color:var(--text2);margin-bottom:4px">&#128196; Format 3 Kolom dari Excel</div>
               <code style="font-size:11px;color:#64b5f6;font-family:var(--mono)">GPON &nbsp;&#9;SN &nbsp;&#9;Username_PPPoE</code>
             </div>
-            <div style="margin-bottom:12px">
-              <label style="font-size:11px;font-weight:600;color:var(--text2);text-transform:uppercase;letter-spacing:0.5px;display:block;margin-bottom:6px">Target VLAN <span style="color:#ef5350">*</span></label>
-              <select id="migVlanSel" class="ig" style="width:100%;font-size:13px">
-                <option value="auto">&#128257; Dinamis dari ID (Banyumas)</option>
-                <option value="168">VLAN 168 &mdash; HS 192 (Banyumas)</option>
-                <option value="179">VLAN 179 &mdash; HS 190 (Banyumas)</option>
-                <option value="180">VLAN 180 &mdash; HS 190 (Banyumas)</option>
-                <option value="181">VLAN 181 &mdash; HS 191 (Banyumas)</option>
-                <option value="182">VLAN 182 &mdash; HS 193 (Banyumas)</option>
-                <option value="300">VLAN 300 &mdash; Kebumen</option>
-                <option value="301">VLAN 301 &mdash; Cilacap</option>
-                <option value="302">VLAN 302 &mdash; Rowokele</option>
-                <option value="137">VLAN 137 &mdash; Karangputat</option>
+            <div style="display:flex;gap:8px;margin-bottom:12px;align-items:center">
+              <select id="migVlanSel" class="ig" style="flex:1;font-size:12px">
+                <option value="auto">&#128257; Dinamis (Banyumas)</option>
+                <option value="168">VLAN 168 — HS 192</option>
+                <option value="179">VLAN 179 — HS 190</option>
+                <option value="180">VLAN 180 — HS 190</option>
+                <option value="181">VLAN 181 — HS 191</option>
+                <option value="182">VLAN 182 — HS 193</option>
+                <option value="300">VLAN 300 — Kebumen</option>
+                <option value="301">VLAN 301 — Cilacap</option>
+                <option value="302">VLAN 302 — Rowokele</option>
+                <option value="137">VLAN 137 — Karangputat</option>
               </select>
             </div>
-          </div>
 
           <div style="margin-bottom:14px">
             <label style="font-size:11px;font-weight:600;color:var(--text2);text-transform:uppercase;letter-spacing:0.5px;display:block;margin-bottom:6px">Data Pelanggan <span style="color:#ef5350">*</span></label>
@@ -957,8 +955,8 @@ gpon-onu_1/5/8:104&#9;ZTEGCF123456&#9;816805982@bms.wifian.net.id"></textarea>
           </div>
 
           <div style="display:flex;gap:8px;align-items:center">
-            <button class="btn bp" style="background:linear-gradient(135deg,#1565c0,#1976d2);border:none;flex:1;height:38px;font-size:13px;font-weight:600;border-radius:7px;cursor:pointer;transition:all 0.2s" onclick="doMigTab()">&#9889; Generate Script</button>
-            <button class="btn" style="background:var(--s2);border:1px solid var(--b2);color:var(--text2);height:38px;padding:0 14px;border-radius:7px;cursor:pointer;font-size:12px" onclick="document.getElementById('migDataTab').value='';document.getElementById('migOutPanel').style.display='none';" title="Bersihkan">&#10005;</button>
+            <button class="btn bp" style="background:linear-gradient(135deg,#1565c0,#1976d2);border:none;flex:1;height:36px;font-size:12px;font-weight:600;border-radius:7px;cursor:pointer" onclick="doMigTab()">&#9889; Generate Script</button>
+            <button class="btn" style="background:var(--s2);border:1px solid var(--b2);color:var(--text2);height:36px;width:36px;border-radius:7px;cursor:pointer;font-size:13px" onclick="document.getElementById('migDataTab').value='';document.getElementById('migEmptyState').style.display='flex';document.getElementById('migZtePre').textContent='';document.getElementById('migCopyBtn').style.display='none';document.getElementById('migONUCount').style.display='none';" title="Bersihkan">&#10005;</button>
           </div>
         </div>
 
