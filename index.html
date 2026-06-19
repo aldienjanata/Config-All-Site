@@ -888,6 +888,7 @@ body.light .modal-btn.cancel { background: #f1f5f9; color: #475569; border-color
     <div class="tab" onclick="setSite('banyumas')" id="tab-banyumas">Banyumas <span class="vb">DYNAMIC</span></div>
     <div class="tab" onclick="setSite('rowokele')" id="tab-rowokele">Rowokele <span class="vb">302</span></div>
     <div class="tab" onclick="setSite('kebumen')" id="tab-kebumen">Kebumen <span class="vb">300</span></div>
+    <div class="tab" onclick="setSite('custom')" id="tab-custom">Custom <span class="vb">&#9881;</span></div>
   </div>
   <div class="sinfo" id="sinfo"></div>
   <div class="card">
@@ -939,7 +940,10 @@ var S={
     hint:"Prefix ID 54320 | @rkw.wifian.net.id | Contoh: 543201205 cukup isi 1205"},
   kebumen:{l:"Kebumen",pfx:"54310",dom:"@kbm.wifian.net.id",vp:300,pro:"PPPOE300",f:"rkw",suf:"@KBM",ac:"config t",
     info:[["VLAN PPPoE","300"],["Profile","PPPOE300"],["Domain","@kbm.wifian.net.id"],["Prefix","54310..."]],
-    hint:"Prefix ID 54310 | @kbm.wifian.net.id | Contoh: 543101451 cukup isi 1451"}
+    hint:"Prefix ID 54310 | @kbm.wifian.net.id | Contoh: 543101451 cukup isi 1451"},
+  custom:{l:"Custom",pfx:"",dom:"",vp:"",vh:"",pro:"",f:"clp",suf:"",ac:"config t",
+    info:[],
+    hint:"Isi parameter konfigurasi secara manual di bawah ini"}
 };
 var PKT=["HELIUM 30Mbps","HELIUM 50Mbps","HELIUM 70Mbps","HELIUM 100Mbps","HELIUM 120Mbps","HELIUM 130Mbps","HELIUM 150Mbps","HELIUM 200Mbps"];
 var CC=[
@@ -972,7 +976,7 @@ var cur="cilacap",rows=[],rid=0;
 
 // Per-site state (rows, rid, output HTML)
 var siteState={};
-["cilacap","karangputat","banyumas","rowokele","kebumen"].forEach(function(s){
+["cilacap","karangputat","banyumas","rowokele","kebumen","custom"].forEach(function(s){
   siteState[s]={rows:[],rid:0,outHtml:"",outVis:false,genData:[]};
 });
 
@@ -1057,7 +1061,20 @@ function setSite(s){
 }
 function rInfo(){
   var s=S[cur];
-  document.getElementById("sinfo").innerHTML=s.info.map(function(it,i){return(i>0?"<div class='si-sep'></div>":"")+"<div class='si-item'><span class='si-lbl'>"+it[0]+"</span><span class='si-val'>"+it[1]+"</span></div>";}).join("");
+  if(cur==="custom"){
+    document.getElementById("sinfo").innerHTML=
+      "<div style='display:flex;gap:12px;flex-wrap:wrap;align-items:center;width:100%'>"+
+      "<div class='si-item' style='align-items:flex-start'><span class='si-lbl'>VLAN PPPoE</span><input class='itxt' type='text' value='"+(s.vp||"")+"' onchange='S.custom.vp=this.value' style='width:80px;margin-top:4px' placeholder='e.g. 301'></div><div class='si-sep'></div>"+
+      "<div class='si-item' style='align-items:flex-start'><span class='si-lbl'>VLAN HS</span><input class='itxt' type='text' value='"+(s.vh||"")+"' onchange='S.custom.vh=this.value' style='width:80px;margin-top:4px' placeholder='e.g. 300'></div><div class='si-sep'></div>"+
+      "<div class='si-item' style='align-items:flex-start'><span class='si-lbl'>Profile</span><input class='itxt' type='text' value='"+(s.pro||"")+"' onchange='S.custom.pro=this.value' style='width:100px;margin-top:4px' placeholder='e.g. PPPOE'></div><div class='si-sep'></div>"+
+      "<div class='si-item' style='align-items:flex-start'><span class='si-lbl'>Domain</span><input class='itxt' type='text' value='"+(s.dom||"")+"' onchange='S.custom.dom=this.value' style='width:140px;margin-top:4px' placeholder='e.g. @clp...'></div><div class='si-sep'></div>"+
+      "<div class='si-item' style='align-items:flex-start'><span class='si-lbl'>Prefix</span><input class='itxt' type='text' value='"+(s.pfx||"")+"' onchange='S.custom.pfx=this.value;rTable();rCards()' style='width:80px;margin-top:4px' placeholder='e.g. 816'></div><div class='si-sep'></div>"+
+      "<div class='si-item' style='align-items:flex-start'><span class='si-lbl'>Suffix</span><input class='itxt' type='text' value='"+(s.suf||"")+"' onchange='S.custom.suf=this.value' style='width:80px;margin-top:4px' placeholder='e.g. @KBM'></div><div class='si-sep'></div>"+
+      "<div class='si-item' style='align-items:flex-start'><span class='si-lbl'>Logika Script</span><select class='isel' onchange='S.custom.f=this.value;rTable();rCards()' style='margin-top:4px;padding:6px'><option value='clp' "+(s.f==="clp"?"selected":"")+">Cilacap (ZTE/AON)</option><option value='rkw' "+(s.f==="rkw"?"selected":"")+">Rowokele (ZTE/AON)</option></select></div>"+
+      "</div>";
+  }else{
+    document.getElementById("sinfo").innerHTML=s.info.map(function(it,i){return(i>0?"<div class='si-sep'></div>":"")+"<div class='si-item'><span class='si-lbl'>"+it[0]+"</span><span class='si-val'>"+it[1]+"</span></div>";}).join("");
+  }
   document.getElementById("siteHint").textContent=s.hint;
 }
 

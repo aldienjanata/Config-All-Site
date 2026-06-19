@@ -1,4 +1,4 @@
-const CACHE_NAME = 'config-all-site-v3';
+const CACHE_NAME = 'config-all-site-v4';
 const ASSETS = ['/', '/index.html', '/manifest.json', '/icons/icon-192.png', '/icons/icon-512.png'];
 
 self.addEventListener('install', e => {
