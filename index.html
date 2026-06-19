@@ -1036,8 +1036,8 @@ function xe(s){return(s||"").replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(
 
 // BANYUMAS
 function bvp(id){var n=parseInt(id)||0;if(n>=816808001&&n<=816810000)return 182;if(n>=816805501&&n<=816808000)return 180;if(n>=816804001&&n<=816805500)return 179;if(n>=816802001&&n<=816804000)return 181;if(n>=816800001&&n<=816802000)return 168;return 168;}
-function bpr(v){return{168:"PPPOE168",179:"PPPOE179",180:"PPPOE180",181:"PPPOE181",182:"PPPOE182"}[v]||"PPPOE168";}
-function bvh(p){return{"PPPOE168":192,"PPPOE179":190,"PPPOE180":190,"PPPOE181":191,"PPPOE182":193}[p]||192;}
+function bpr(v){return{168:"PPPOE",179:"PPPOE179",180:"PPPOE180",181:"PPPOE181",182:"PPPOE182"}[v]||"PPPOE";}
+function bvh(p){return{"PPPOE":192,"PPPOE179":190,"PPPOE180":190,"PPPOE181":191,"PPPOE182":193}[p]||192;}
 
 // THEME
 function toggleTheme(){
