@@ -1610,7 +1610,6 @@ function doGen(){
       os2.scrollIntoView({behavior:"smooth",block:"start"});
     }
   },150);
-  showToast(valid.length+" script berhasil di-generate","ok",3000);
   siteState[cur].genData=JSON.parse(JSON.stringify(valid));
   saveCurState();
   siteState[cur].outVis=true;
