@@ -1062,6 +1062,10 @@ gpon-onu_1/5/8:103&#9;ZTEG...&#9;816805981@bms.wifian.net.id"></textarea>
           <code id="importColsList" style="font-size:11px;color:#64b5f6;font-family:var(--mono);line-height:1.6;display:block">...</code>
         </div>
         <div>
+          <label style="font-size:11px;font-weight:600;color:var(--text2);text-transform:uppercase;letter-spacing:0.5px;display:block;margin-bottom:6px">Pilih Paket untuk Semua Baris <span style="color:#ef5350">*</span></label>
+          <select id="importPaketSel" class="ig" style="width:100%;font-size:12px"></select>
+        </div>
+        <div>
           <label style="font-size:11px;font-weight:600;color:var(--text2);text-transform:uppercase;letter-spacing:0.5px;display:block;margin-bottom:6px">Data Pelanggan (Paste di Sini) <span style="color:#ef5350">*</span></label>
           <textarea id="importData" style="width:100%;height:220px;font-family:var(--mono);font-size:12px;line-height:1.6;background:var(--s1);color:var(--t1);border:1px solid var(--b2);border-radius:6px;padding:12px;resize:vertical;box-sizing:border-box" placeholder="Contoh Paste dari Excel:
 1/5/7	103			ZTEGCF...	NAMA PELANGGAN	..."></textarea>
@@ -1625,8 +1629,12 @@ function cpyAllMk(){
 // --- IMPORT EXCEL ---
 function showImport(){
   var cols=gc();
-  var cNames=cols.filter(function(c){return !c.tgl;}).map(function(c){return c.l.replace("(pindah)","");});
+  var cNames=cols.filter(function(c){return !c.tgl && c.k!=="paket";}).map(function(c){return c.l.replace("(pindah)","");});
   document.getElementById("importColsList").textContent=cNames.join(" \t ");
+  
+  var pSel=document.getElementById("importPaketSel");
+  pSel.innerHTML=PKT.map(function(p){return "<option value='"+p+"'>"+p+"</option>";}).join("");
+  
   document.getElementById("importData").value="";
   document.getElementById("importModal").style.display="flex";
 }
@@ -1634,13 +1642,14 @@ function doImport(){
   var raw=document.getElementById("importData").value.trim();
   if(!raw){showToast("Paste data Excel terlebih dahulu!","warn");return;}
   var lines=raw.split("\n");
-  var cols=gc().filter(function(c){return !c.tgl;});
+  var cols=gc().filter(function(c){return !c.tgl && c.k!=="paket";});
+  var selectedPaket=document.getElementById("importPaketSel").value;
   var imported=0;
   lines.forEach(function(l){
     var parts=l.split("\t");
     // Ignore completely empty rows
     if(parts.join("").trim()==="") return;
-    var row={id:++rid,ot:"zte"};
+    var row={id:++rid,ot:"zte",paket:selectedPaket};
     cols.forEach(function(c,i){
       row[c.k]=(parts[i]||"").trim();
     });
