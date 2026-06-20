@@ -89,13 +89,20 @@ body {
   min-height: 100vh;
 }
 
-::-webkit-scrollbar { width: 10px; height: 10px; }
-::-webkit-scrollbar-track { background: var(--s0); }
-::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.2); border-radius: 99px; }
-::-webkit-scrollbar-thumb:hover { background: rgba(255,255,255,0.4); }
+::-webkit-scrollbar { width: 12px; height: 12px; }
+::-webkit-scrollbar-track { background: transparent; }
+::-webkit-scrollbar-thumb { 
+  background: rgba(59, 130, 246, 0.45); 
+  border-radius: 20px; 
+  border: 3px solid var(--s0); 
+}
+::-webkit-scrollbar-thumb:hover { background: rgba(59, 130, 246, 0.8); }
 
-body.light ::-webkit-scrollbar-thumb { background: rgba(0,0,0,0.15); }
-body.light ::-webkit-scrollbar-thumb:hover { background: rgba(0,0,0,0.25); }
+body.light ::-webkit-scrollbar-thumb { 
+  background: rgba(59, 130, 246, 0.35); 
+  border: 3px solid #f8fafc; 
+}
+body.light ::-webkit-scrollbar-thumb:hover { background: rgba(59, 130, 246, 0.7); }
 
 /* ═══════════════════════════════════════════
    HEADER
@@ -855,6 +862,8 @@ body.light .modal-msg { color: #64748b; }
 .modal-btn.danger:hover { filter: brightness(1.1); }
 .modal-btn.primary { background: var(--blue); color: #fff; box-shadow: 0 2px 8px rgba(59,130,246,.3); }
 .modal-btn.primary:hover { filter: brightness(1.1); }
+.modal-btn.danger { background: linear-gradient(135deg,#e11d48,#be123c); color:#fff; border:none; box-shadow: 0 4px 10px rgba(225,29,72,0.3); }
+.modal-btn.danger:hover { background: linear-gradient(135deg,#be123c,#9f1239); }
 body.light .modal-btn.cancel { background: #f1f5f9; color: #475569; border-color: #e2e8f0; }
 </style>
 </head>
@@ -1398,7 +1407,23 @@ function uc(el){
   });
   if(el.dataset.minw)autoW(el);
 }
-function clearAll(){if(rows.length===0||window.confirm("Hapus semua data?")){rows=[];rid=0;rTable();rCards();document.getElementById("outSec").style.display="none";upCnt();}}
+function clearAll(){
+  if(rows.length===0) return;
+  showModal({
+    title: "Hapus Semua Data",
+    msg: "Yakin ingin menghapus seluruh data pelanggan di site ini? Data yang sudah dihapus tidak dapat dikembalikan.",
+    icon: "&#9888;&#65039;",
+    confirmText: "Ya, Hapus Semua",
+    confirmClass: "danger",
+    cancelText: "Batal",
+    onConfirm: function() {
+      rows=[]; rid=0; rTable(); rCards();
+      var os=document.getElementById("outSec"); if(os) os.style.display="none";
+      upCnt();
+      showToast("Semua data berhasil dihapus.", "ok");
+    }
+  });
+}
 function upCnt(){document.getElementById("rowCount").textContent=rows.length+" Pelanggan";}
 window.addEventListener("resize",function(){rCards();});
 
@@ -1804,10 +1829,12 @@ function showToast(msg,type,dur){
   setTimeout(function(){closeToast(id);},dur);
 }
 function closeToast(id){
-  var el=document.getElementById(id);
-  if(!el)return;
-  el.classList.add("out");
-  setTimeout(function(){if(el.parentNode)el.parentNode.removeChild(el);},200);
+  try {
+    var el=document.getElementById(id);
+    if(!el)return;
+    el.classList.add("out");
+    setTimeout(function(){ if(el && el.parentNode) el.remove(); }, 250);
+  } catch(e) {}
 }
 
 // INIT
@@ -1846,38 +1873,6 @@ function confirmModal(){
   closeModal();
   if(_modalCb)_modalCb();
 }
-
-// ── TOAST NOTIFICATION ──
-var _toastId=0;
-function showToast(msg,type,dur){
-  type=type||"info"; dur=dur||4000;
-  var icons={err:"&#10060;",ok:"&#9989;",info:"&#8505;&#65039;",warn:"&#9888;&#65039;"};
-  var titles={err:"Perhatian",ok:"Berhasil",info:"Info",warn:"Peringatan"};
-  var wrap=document.getElementById("toast-wrap");
-  if(!wrap)return;
-  var id="t"+(++_toastId);
-  var div=document.createElement("div");
-  div.className="toast toast-"+type;
-  div.id=id;
-  div.style.setProperty("--dur",(dur/1000)+"s");
-  div.innerHTML="<span class='toast-icon'>"+icons[type]+"</span>"+
-    "<div class='toast-body'>"+
-    "<div class='toast-title'>"+titles[type]+"</div>"+
-    "<div class='toast-msg'>"+msg+"</div>"+
-    "<div class='toast-bar'></div></div>"+
-    "<button class='toast-close' onclick='closeToast(\""+id+"\")'>&#215;</button>";
-  wrap.appendChild(div);
-  setTimeout(function(){closeToast(id);},dur);
-}
-function closeToast(id){
-  var el=document.getElementById(id);
-  if(!el)return;
-  el.classList.add("out");
-  setTimeout(function(){if(el.parentNode)el.parentNode.removeChild(el);},200);
-}
-
-// INIT
-rInfo();rTable();rCards();addRow();upCnt();
 
 // ── PINDAH VLAN MASAL ──
 function doMigTab(){
