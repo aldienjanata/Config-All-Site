@@ -896,6 +896,7 @@ body.light .modal-btn.cancel { background: #f1f5f9; color: #475569; border-color
     <div class="card-hdr">
       <div class="card-title"><div class="cdot"></div>Data Pelanggan</div>
       <div class="tbar">
+        <button class="btn bp bsm" style="background:#1565c0;color:#fff;border:none;margin-right:6px" onclick="showImport()">&#128193; Import Data</button>
         <button class="btn bg bsm" onclick="addRow()">+ Tambah Baris</button>
         <button class="btn bd bsm" onclick="clearAll()">&#128465; Hapus Semua</button>
       </div>
@@ -991,6 +992,33 @@ gpon-onu_1/5/8:103&#9;ZTEG...&#9;816805981@bms.wifian.net.id"></textarea>
       </div>
     </div>
     <div id="outCont"></div>
+  </div>
+</div>
+
+<div id="importModal" style="display:none;position:fixed;top:0;left:0;right:0;bottom:0;background:rgba(0,0,0,0.8);z-index:9999;align-items:center;justify-content:center;padding:20px">
+  <div style="background:var(--s1);width:100%;max-width:800px;border-radius:12px;display:flex;flex-direction:column;overflow:hidden;border:1px solid var(--b2);box-shadow:0 10px 30px rgba(0,0,0,0.5)">
+     <div style="background:linear-gradient(135deg,#1a237e 0%,#283593 50%,#1565c0 100%);padding:16px 20px;color:#fff;display:flex;justify-content:space-between;align-items:center">
+        <div style="font-weight:700;font-size:15px;display:flex;align-items:center;gap:8px">
+          <div style="width:8px;height:8px;border-radius:50%;background:#64b5f6;box-shadow:0 0 8px #64b5f6"></div>
+          &#128193; Import Data dari Excel
+        </div>
+        <button onclick="document.getElementById('importModal').style.display='none'" style="background:transparent;border:none;color:rgba(255,255,255,0.7);cursor:pointer;font-size:18px;line-height:1;padding:0">&#10005;</button>
+     </div>
+     <div style="padding:20px;display:flex;flex-direction:column;gap:16px">
+        <div style="background:var(--s2);border:1px solid var(--b2);border-radius:8px;padding:12px 16px">
+          <div style="font-size:11px;font-weight:700;color:var(--text2);text-transform:uppercase;letter-spacing:1px;margin-bottom:6px">Urutan Kolom (Pisahkan dengan Tab / Copy-Paste dari Excel):</div>
+          <code id="importColsList" style="font-size:11px;color:#64b5f6;font-family:var(--mono);line-height:1.6;display:block">...</code>
+        </div>
+        <div>
+          <label style="font-size:11px;font-weight:600;color:var(--text2);text-transform:uppercase;letter-spacing:0.5px;display:block;margin-bottom:6px">Data Pelanggan (Paste di Sini) <span style="color:#ef5350">*</span></label>
+          <textarea id="importData" style="width:100%;height:220px;font-family:var(--mono);font-size:12px;line-height:1.6;background:var(--s1);color:var(--t1);border:1px solid var(--b2);border-radius:6px;padding:12px;resize:vertical;box-sizing:border-box" placeholder="Contoh Paste dari Excel:
+1/5/7	103			ZTEGCF...	NAMA PELANGGAN	..."></textarea>
+        </div>
+     </div>
+     <div style="padding:16px 20px;border-top:1px solid var(--b2);display:flex;justify-content:flex-end;gap:10px;background:var(--s2)">
+        <button class="btn" style="background:var(--s1);border:1px solid var(--b2);color:var(--text2);font-weight:600;padding:8px 16px" onclick="document.getElementById('importModal').style.display='none'">Batal</button>
+        <button class="btn bp" style="background:linear-gradient(135deg,#1565c0,#1976d2);border:none;font-weight:600;padding:8px 20px;color:#fff" onclick="doImport()">&#9889; Import Data</button>
+     </div>
   </div>
 </div>
 
@@ -1532,6 +1560,44 @@ function cpyAllMk(){
   });
   doCpyBtn(all.join("\n"),"cpyMkBtn");
 }
+
+// --- IMPORT EXCEL ---
+function showImport(){
+  var cols=gc();
+  var cNames=cols.filter(function(c){return !c.tgl;}).map(function(c){return c.l.replace("(pindah)","");});
+  document.getElementById("importColsList").textContent=cNames.join(" \t ");
+  document.getElementById("importData").value="";
+  document.getElementById("importModal").style.display="flex";
+}
+function doImport(){
+  var raw=document.getElementById("importData").value.trim();
+  if(!raw){showToast("Paste data Excel terlebih dahulu!","warn");return;}
+  var lines=raw.split("\n");
+  var cols=gc().filter(function(c){return !c.tgl;});
+  var imported=0;
+  lines.forEach(function(l){
+    var parts=l.split("\t");
+    // Ignore completely empty rows
+    if(parts.join("").trim()==="") return;
+    var row={id:++rid,ot:"zte"};
+    cols.forEach(function(c,i){
+      row[c.k]=(parts[i]||"").trim();
+    });
+    rows.push(row);
+    imported++;
+  });
+  document.getElementById("importModal").style.display="none";
+  rTable();
+  rCards();
+  upCnt();
+  showToast(imported+" baris berhasil di-import!","ok");
+}
+
+// ----------------------------------------------------
+// UI INIT
+// ----------------------------------------------------
+rInfo();rTable();rCards();addRow();upCnt();
+
 function doCpyBtn(text,btnId){
   navigator.clipboard.writeText(text).then(function(){
     var btn=document.getElementById(btnId);if(!btn)return;
