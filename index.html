@@ -326,8 +326,7 @@ body.light .hdr { background: #0f1f4a; border-color: rgba(255,255,255,.08); }
    TABLE
 ═══════════════════════════════════════════ */
 .tbl-wrap {
-  overflow: auto;
-  max-height: 55vh;
+  overflow-x: auto;
   -webkit-overflow-scrolling: touch;
   border: 1.5px solid #1f3050;
   border-radius: var(--r);
@@ -336,7 +335,7 @@ body.light .hdr { background: #0f1f4a; border-color: rgba(255,255,255,.08); }
 
 table { width: 100%; border-collapse: collapse; font-size: 12px; }
 
-thead { background: #111c2e; position: sticky; top: 0; z-index: 10; }
+thead { background: #111c2e; }
 thead th {
   padding: 9px 8px;
   font-size: 9px; font-weight: 700;
@@ -344,7 +343,6 @@ thead th {
   color: #4e6a8a; font-family: var(--mono);
   border-bottom: 1.5px solid #1f3050;
   white-space: nowrap; text-align: left;
-  background: #111c2e;
 }
 thead th.rq::after { content: ' *'; color: var(--rose); opacity: .6; }
 
@@ -683,8 +681,8 @@ body.light input[type=text], body.light select {
 body.light input[type=text]:focus, body.light select:focus { border-color: #3b82f6; background: #fafcff; }
 body.light input[type=text]::placeholder { color: #94a3b8; }
 body.light .tbl-wrap { border-color: #cbd5e1; background: #f8fafc; }
-body.light thead { background: #f1f5f9; position: sticky; top: 0; z-index: 10; }
-body.light thead th { color: #64748b; border-color: #e2e8f0; background: #f1f5f9; }
+body.light thead { background: #f1f5f9; }
+body.light thead th { color: #64748b; border-color: #e2e8f0; }
 body.light tbody tr { background: #fff; border-color: #f1f5f9; }
 body.light tbody tr:hover { background: #f8fafc; }
 body.light input[type=text]::placeholder { color: #94a3b8; }
@@ -1087,7 +1085,7 @@ gpon-onu_1/5/8:103&#9;ZTEG...&#9;816805981@bms.wifian.net.id"></textarea>
 
 <div id="quickNav" style="position:fixed;bottom:24px;right:24px;display:flex;flex-direction:column;gap:10px;z-index:999;opacity:0.4;transition:opacity 0.2s" onmouseover="this.style.opacity=1" onmouseout="this.style.opacity=0.4">
   <button onclick="window.scrollTo({top:0,behavior:'smooth'})" style="width:44px;height:44px;border-radius:50%;background:linear-gradient(135deg,#1e88e5,#1565c0);color:#fff;border:none;cursor:pointer;box-shadow:0 4px 12px rgba(0,0,0,0.4);font-size:20px;display:flex;align-items:center;justify-content:center" title="Scroll ke Atas">&#8679;</button>
-  <button onclick="window.scrollTo({top:document.body.scrollHeight,behavior:'smooth'})" style="width:44px;height:44px;border-radius:50%;background:linear-gradient(135deg,#1e88e5,#1565c0);color:#fff;border:none;cursor:pointer;box-shadow:0 4px 12px rgba(0,0,0,0.4);font-size:20px;display:flex;align-items:center;justify-content:center" title="Scroll ke Bawah">&#8681;</button>
+  <button onclick="window.scrollTo({top:999999,behavior:'smooth'})" style="width:44px;height:44px;border-radius:50%;background:linear-gradient(135deg,#1e88e5,#1565c0);color:#fff;border:none;cursor:pointer;box-shadow:0 4px 12px rgba(0,0,0,0.4);font-size:20px;display:flex;align-items:center;justify-content:center" title="Scroll ke Bawah">&#8681;</button>
 </div>
 
 <script>
