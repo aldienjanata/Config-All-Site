@@ -513,7 +513,9 @@ table { table-layout: auto; }
   margin-bottom: 14px;
   box-shadow: var(--shadow);
 }
+.cb.collapsed .out-cols { display: none; }
 
+.cbhd:hover { background: var(--s2); }
 .cbhd {
   padding: 13px 18px;
   background: var(--s3);
@@ -1043,6 +1045,9 @@ gpon-onu_1/5/8:103&#9;ZTEG...&#9;816805981@bms.wifian.net.id"></textarea>
         <button class="cpy" id="cpyScBtn"    onclick="cpyAllScript()">&#128250; Copy Semua Script</button>
         <button class="cpy" id="cpyCmBtn"    onclick="cpyAllComment()">&#128172; Copy Semua Comment</button>
         <button class="cpy" id="cpyMkBtn"    onclick="cpyAllMk()">&#128295; Copy Semua PPP Secret</button>
+        <span style="border-left:1px solid rgba(255,255,255,0.2);margin:0 4px"></span>
+        <button class="cpy" onclick="document.querySelectorAll('.cb').forEach(function(c){c.classList.add('collapsed');})">&#8679; Tutup Semua</button>
+        <button class="cpy" onclick="document.querySelectorAll('.cb').forEach(function(c){c.classList.remove('collapsed');})">&#8681; Buka Semua</button>
       </div>
     </div>
     <div id="outCont"></div>
@@ -1078,6 +1083,11 @@ gpon-onu_1/5/8:103&#9;ZTEG...&#9;816805981@bms.wifian.net.id"></textarea>
         <button class="btn bp" style="background:linear-gradient(135deg,#1565c0,#1976d2);border:none;font-weight:600;padding:8px 20px;color:#fff" onclick="doImport()">&#9889; Import Data</button>
      </div>
   </div>
+</div>
+
+<div id="quickNav" style="position:fixed;bottom:24px;right:24px;display:flex;flex-direction:column;gap:10px;z-index:999;opacity:0.4;transition:opacity 0.2s" onmouseover="this.style.opacity=1" onmouseout="this.style.opacity=0.4">
+  <button onclick="window.scrollTo({top:0,behavior:'smooth'})" style="width:44px;height:44px;border-radius:50%;background:linear-gradient(135deg,#1e88e5,#1565c0);color:#fff;border:none;cursor:pointer;box-shadow:0 4px 12px rgba(0,0,0,0.4);font-size:20px;display:flex;align-items:center;justify-content:center" title="Scroll ke Atas">&#8679;</button>
+  <button onclick="window.scrollTo({top:document.body.scrollHeight,behavior:'smooth'})" style="width:44px;height:44px;border-radius:50%;background:linear-gradient(135deg,#1e88e5,#1565c0);color:#fff;border:none;cursor:pointer;box-shadow:0 4px 12px rgba(0,0,0,0.4);font-size:20px;display:flex;align-items:center;justify-content:center" title="Scroll ke Bawah">&#8681;</button>
 </div>
 
 <script>
@@ -1486,15 +1496,15 @@ function buildOut(validRows){
     var scr=z?sc.zte:sc.aon;
     var div=document.createElement("div");div.className="cb";div.id="cb"+idx;
     var html="";
-    html+="<div class='cbhd'>";
+    html+="<div class='cbhd' style='cursor:pointer' onclick='this.closest(\".cb\").classList.toggle(\"collapsed\")'>";
     html+="<div><div class='cbnm'>"+(idx+1)+". "+xe(row.nama||"—")+"</div>";
-    html+="<div class='cbmt'><button class='pp-cpy' data-pp='"+xe(sc.pp)+"' onclick='cpyPP(this)'>&#128203; "+xe(sc.pp)+"</button><span class='pp-sep'>&middot;</span><span>GPON "+"1/"+(row.gpon||"")+":"+(row.onu||"")+"</span></div></div>";
+    html+="<div class='cbmt'><button class='pp-cpy' data-pp='"+xe(sc.pp)+"' onclick='event.stopPropagation();cpyPP(this)'>&#128203; "+xe(sc.pp)+"</button><span class='pp-sep'>&middot;</span><span>GPON "+"1/"+(row.gpon||"")+":"+(row.onu||"")+"</span></div></div>";
     html+="<div class='cbtg'>";
     html+="<span class='tag tv'>VLAN "+vt+"</span>";
     html+="<span class='tag tp'>"+xe(sc.pro)+"</span>";
     html+="<span class='tag tk'>"+xe(row.paket||"")+"</span>";
     html+=z?"<span class='tag tz'>ZTE ONT</span>":"<span class='tag ta'>All ONT</span>";
-    html+="<button class='cpy' data-idx='"+idx+"' data-z='"+(z?1:0)+"' onclick='cpyBlk(this)'>&#128203; Copy Semua</button>";
+    html+="<button class='cpy' data-idx='"+idx+"' data-z='"+(z?1:0)+"' onclick='event.stopPropagation();cpyBlk(this)'>&#128203; Copy Semua</button>";
     html+="</div></div>";
     html+="<div class='out-cols'><div class='out-left'>";
     if(hasDel){
