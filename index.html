@@ -89,10 +89,13 @@ body {
   min-height: 100vh;
 }
 
-::-webkit-scrollbar { width: 5px; height: 5px; }
-::-webkit-scrollbar-track { background: transparent; }
-::-webkit-scrollbar-thumb { background: var(--b2); border-radius: 99px; }
-::-webkit-scrollbar-thumb:hover { background: var(--b3); }
+::-webkit-scrollbar { width: 10px; height: 10px; }
+::-webkit-scrollbar-track { background: var(--s0); }
+::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.2); border-radius: 99px; }
+::-webkit-scrollbar-thumb:hover { background: rgba(255,255,255,0.4); }
+
+body.light ::-webkit-scrollbar-thumb { background: rgba(0,0,0,0.15); }
+body.light ::-webkit-scrollbar-thumb:hover { background: rgba(0,0,0,0.25); }
 
 /* ═══════════════════════════════════════════
    HEADER
@@ -1533,14 +1536,41 @@ function buildOut(validRows){
 // GENERATE
 function doGen(){
   syncD();
-  var valid=rows.filter(function(r){return vld(r).length===0;});
+  var valid=[]; var invalid=[];
+  rows.forEach(function(r, i){
+    var m=vld(r);
+    if(m.length===0) valid.push(r);
+    else invalid.push({i:i+1, m:m.join(", ")});
+  });
   if(!valid.length){
-    var allMiss=rows.map(function(r){return vld(r);}).filter(function(m){return m.length>0;});
-    var missing=allMiss.length?allMiss[0].join(", "):"unknown";
+    var missing=invalid.length?invalid[0].m:"unknown";
     showToast("Field wajib belum diisi: <strong>"+missing+"</strong>","err",5000);return;
   }
   buildOut(valid);
+  
   var os=document.getElementById("outSec");
+  var sumDiv=document.getElementById("genSummary");
+  if(!sumDiv){
+    sumDiv=document.createElement("div");
+    sumDiv.id="genSummary";
+    sumDiv.style.padding="10px 18px";
+    sumDiv.style.fontSize="12.5px";
+    sumDiv.style.borderBottom="1px solid var(--b1)";
+    os.insertBefore(sumDiv, document.getElementById("outCont"));
+  }
+  if(invalid.length>0){
+    var fl=invalid.map(function(x){return "Baris "+x.i+" ("+x.m+")";}).join(" | ");
+    sumDiv.innerHTML="&#9888;&#65039; <strong>Berhasil: "+valid.length+" baris</strong> &mdash; <span style='color:#ef4444'><strong>Gagal: "+invalid.length+" baris</strong> (Alasan: "+fl+")</span>";
+    sumDiv.style.background="rgba(239,68,68,0.1)";
+    sumDiv.style.color="#f8fafc";
+    showToast(valid.length+" berhasil, "+invalid.length+" gagal.","warn",4000);
+  } else {
+    sumDiv.innerHTML="&#10004;&#65039; <strong style='color:#10b981'>Berhasil men-generate semua "+valid.length+" baris!</strong>";
+    sumDiv.style.background="rgba(16,185,129,0.06)";
+    sumDiv.style.color="inherit";
+    showToast(valid.length+" script berhasil di-generate","ok",3000);
+  }
+
   var oh=document.querySelector("#outSec .oh");
   if(oh){oh.style.display="flex";oh.style.visibility="visible";}
   if(os){
