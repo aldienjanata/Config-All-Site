@@ -1480,11 +1480,20 @@ function gClp(row){
   var z="conf t\ninterface "+pon+"\nno onu "+(row.onu||"")+"\nonu "+(row.onu||"")+" type ALL-ONT sn "+(row.sn||"")+"\nexit\n\ninterface "+op+"\nname "+oNm+"\ndescription $$"+desk+"$$\nsn-bind enable sn\ntcont 1 name T-PPP profile SERVER\ntcont 2 name T-HS profile SERVER\ngemport 1 name G-PPP tcont 1\ngemport 2 name G-HS tcont 2\nservice-port 1 vport 1 user-vlan "+p.vp+" vlan "+p.vp+"\nservice-port 1 description PPP\nservice-port 2 vport 2 user-vlan "+p.vh+" vlan "+p.vh+"\nservice-port 2 description HS\nexit\n\npon-onu-mng "+op+"\nservice PPP gemport 1 vlan "+p.vp+"\nservice HS gemport 2 vlan "+p.vh+"\nvlan port veip_1 mode hybrid def-vlan "+p.vp+"\nvlan port wifi_0/2 mode hybrid def-vlan "+p.vh+"\nwan-ip 1 mode pppoe username "+pp+" password "+pw+" vlan-profile "+p.pro+" host 1\nwan-ip 1 ping-response enable traceroute-response enable\nsecurity-mgmt 212 state enable mode forward protocol web\nssid auth wep wifi_0/2 open-system\nssid ctrl wifi_0/2 name WIFIAN hide enable\ntr069-mgmt 1 acs http://172.27.0.191:7547/ validate basic username wifian password WSacs20000\nexit\nend\n";
   var ac=S[cur].ac;
   var a=ac+"\ninterface "+pon+"\nno onu "+(row.onu||"")+"\nonu "+(row.onu||"")+" type ALL-ONT sn "+(row.sn||"")+"\nexit\n\ninterface "+op+"\nname "+oNm+"\ndescription $$"+desk+"$$\nsn-bind enable sn\ntcont 1 name T-PPP profile SERVER\ntcont 2 name T-HS profile SERVER\ngemport 1 name G-PPP tcont 1\ngemport 2 name G-HS tcont 2\nservice-port 1 vport 1 user-vlan "+p.vp+" vlan "+p.vp+"\nservice-port 1 description PPP\nservice-port 2 vport 2 user-vlan "+p.vh+" vlan "+p.vh+"\nservice-port 2 description HS\nexit\n\npon-onu-mng "+op+"\nservice PPP gemport 1 vlan "+p.vp+"\nservice HS gemport 2 vlan "+p.vh+"\nvlan port veip_1 mode hybrid def-vlan "+p.vp+"\nvlan port wifi_0/2 mode hybrid def-vlan "+p.vh+"\n\nexit\nend\n";
-  var mk;
-  if(cur==="cilacap")mk="ppp secret add comment ="+cmt+" name ="+pp+" password="+pw+" profile="+row.paket+" service=pppoe\n";
-  else if(cur==="karangputat")mk="ppp secret add comment="+cmt+" name="+pp+" password="+pw+" profile="+row.paket+" service=pppoe\n";
-  else mk="ppp secret add comment=\""+cmt+"\" name="+pp+" password="+pw+" profile=\""+row.paket+"\" service=pppoe\n";
-  return{zte:z,aon:a,mk:mk,cmt:cmt,pp:pp,vp:p.vp,vh:p.vh,pro:p.pro};
+  var mk, mku;
+  if(cur==="cilacap"){
+    mk="ppp secret add comment ="+cmt+" name ="+pp+" password="+pw+" profile="+row.paket+" service=pppoe\n";
+    mku="ppp secret set [find name="+pp+"] comment ="+cmt+"\n";
+  }
+  else if(cur==="karangputat"){
+    mk="ppp secret add comment="+cmt+" name="+pp+" password="+pw+" profile="+row.paket+" service=pppoe\n";
+    mku="ppp secret set [find name="+pp+"] comment="+cmt+"\n";
+  }
+  else {
+    mk="ppp secret add comment=\""+cmt+"\" name="+pp+" password="+pw+" profile=\""+row.paket+"\" service=pppoe\n";
+    mku="ppp secret set [find name=\""+pp+"\"] comment=\""+cmt+"\"\n";
+  }
+  return{zte:z,aon:a,mk:mk,mku:mku,cmt:cmt,pp:pp,vp:p.vp,vh:p.vh,pro:p.pro};
 }
 
 // SCRIPT GEN RKW
@@ -1499,7 +1508,8 @@ function gRkw(row){
   var z="conf t\ninterface "+pon+"\nno onu "+(row.onu||"")+"\nonu "+(row.onu||"")+" type ALL-ONT sn "+(row.sn||"")+"\nexit\n\ninterface "+op+"\nname "+oNm+"\ndescription $$"+(row.nohp||"")+"$$\nsn-bind enable sn\ntcont 1 name T-PPP profile SERVER\ngemport 1 name G-PPP tcont 1\nservice-port 1 vport 1 user-vlan "+p.vp+" vlan "+p.vp+"\nservice-port 1 description PPP\nexit\n\npon-onu-mng "+op+"\nservice PPP gemport 1 vlan "+p.vp+"\nwan-ip 1 mode pppoe username "+pp+" password "+pw+" vlan-profile "+p.pro+" host 1\nwan-ip 1 ping-response enable traceroute-response enable\nsecurity-mgmt 212 state enable mode forward protocol web\ntr069-mgmt 1 acs http://172.27.0.191:7547/ validate basic username wifian password WSacs20000\nexit\nend\n";
   var a="config t\ninterface "+pon+"\nno onu "+(row.onu||"")+"\nonu "+(row.onu||"")+" type ALL-ONT sn "+(row.sn||"")+"\nexit\n\ninterface "+op+"\nname "+oNm+"\ndescription $$"+(row.nohp||"")+"$$\nsn-bind enable sn\ntcont 1 name T-PPP profile SERVER\ngemport 1 name G-PPP tcont 1\nservice-port 1 vport 1 user-vlan "+p.vp+" vlan "+p.vp+"\nservice-port 1 description PPP\n\nexit\npon-onu-mng "+op+"\nservice PPP gemport 1 vlan "+p.vp+"\nvlan port veip_1 mode hybrid def-vlan "+p.vp+"\n\nexit\nend\n";
   var mk="ppp secret add comment=\""+cmt+"\" name="+pp+" password="+pw+" profile=\""+row.paket+"\" service=pppoe\n";
-  return{zte:z,aon:a,mk:mk,cmt:cmt,pp:pp,vp:p.vp,vh:null,pro:p.pro};
+  var mku="ppp secret set [find name=\""+pp+"\"] comment=\""+cmt+"\"\n";
+  return{zte:z,aon:a,mk:mk,mku:mku,cmt:cmt,pp:pp,vp:p.vp,vh:null,pro:p.pro};
 }
 
 function gSc(row){var f=S[cur].f;return(f==="rkw"||f==="kbm")?gRkw(row):gClp(row);}
@@ -1549,6 +1559,9 @@ function buildOut(validRows){
     html+="<div class='mkp'><div class='mkl'><span>&#128295; MikroTik &mdash; PPP Secret Add</span>";
     html+="<button class='cpy' data-eid='mk"+idx+"' onclick='cpEl(this)'>Copy</button></div>";
     html+="<div class='mkv' id='mk"+idx+"'></div></div>";
+    html+="<div class='mkp'><div class='mkl'><span>&#128295; MikroTik &mdash; PPP Secret Update Comment</span>";
+    html+="<button class='cpy' data-eid='mku"+idx+"' onclick='cpEl(this)'>Copy</button></div>";
+    html+="<div class='mkv' id='mku"+idx+"'></div></div>";
     html+="</div></div>";
     div.innerHTML=html;
     out.appendChild(div);
@@ -1556,6 +1569,7 @@ function buildOut(validRows){
     var se=document.getElementById("sc"+idx);if(se)se.textContent=scr;
     var ce=document.getElementById("cm"+idx);if(ce)ce.textContent=sc.cmt;
     var me=document.getElementById("mk"+idx);if(me)me.textContent=sc.mk;
+    var mue=document.getElementById("mku"+idx);if(mue)mue.textContent=sc.mku;
   });
 }
 // GENERATE
