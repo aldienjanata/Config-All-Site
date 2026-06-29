@@ -1055,6 +1055,7 @@ gpon-onu_1/5/8:103&#9;ZTEG...&#9;816805981@bms.wifian.net.id"></textarea>
         <button class="cpy" id="cpyScBtn"    onclick="cpyAllScript()">&#128250; Copy Semua Script</button>
         <button class="cpy" id="cpyCmBtn"    onclick="cpyAllComment()">&#128172; Copy Semua Comment</button>
         <button class="cpy" id="cpyMkBtn"    onclick="cpyAllMk()">&#128295; Copy Semua PPP Secret</button>
+        <button class="cpy" id="cpyMkUpBtn"  onclick="cpyAllMkUp()">&#128295; Copy Semua Update Comment</button>
         <span style="border-left:1px solid rgba(255,255,255,0.2);margin:0 4px"></span>
         <button class="cpy" onclick="document.querySelectorAll('.cb').forEach(function(c){c.classList.add('collapsed');})">&#8679; Tutup Semua</button>
         <button class="cpy" onclick="document.querySelectorAll('.cb').forEach(function(c){c.classList.remove('collapsed');})">&#8681; Buka Semua</button>
@@ -1665,11 +1666,13 @@ function cpyAll2(){
   blks.forEach(function(b){
     var nm=b.querySelector(".cbnm");
     all.push("==================================\n"+(nm?nm.textContent:"")+"\n==================================");
-    var d=b.querySelector("[id^=dl]"),s=b.querySelector("[id^=sc]"),c=b.querySelector("[id^=cm]"),m=b.querySelector("[id^=mk]");
+    var d=b.querySelector("[id^=dl]"),s=b.querySelector("[id^=sc]"),c=b.querySelector("[id^=cm]");
+    var m=b.querySelector("[id^=mk]:not([id^=mku])"), mu=b.querySelector("[id^=mku]");
     if(d)all.push("--- DELETE OLD PON ---\n"+(d.innerText||d.textContent));
     if(s)all.push("--- OLT SCRIPT ---\n"+(s.innerText||s.textContent));
     if(c)all.push("--- ADD COMMENT ---\n"+(c.innerText||c.textContent));
-    if(m)all.push("--- MIKROTIK ---\n"+(m.innerText||m.textContent));
+    if(m)all.push("--- MIKROTIK ADD ---\n"+(m.innerText||m.textContent));
+    if(mu)all.push("--- MIKROTIK UPDATE ---\n"+(mu.innerText||mu.textContent));
   });
   doCpyBtn(all.join("\n\n"),"cpyAllBtn");
 }
@@ -1698,10 +1701,18 @@ function cpyAllComment(){
 function cpyAllMk(){
   var all=[],blks=document.querySelectorAll(".cb");
   blks.forEach(function(b){
-    var m=b.querySelector("[id^=mk]");
+    var m=b.querySelector("[id^=mk]:not([id^=mku])");
     if(m) all.push((m.innerText||m.textContent).replace(/\n+$/,"")+"\n");
   });
   doCpyBtn(all.join("\n"),"cpyMkBtn");
+}
+function cpyAllMkUp(){
+  var all=[],blks=document.querySelectorAll(".cb");
+  blks.forEach(function(b){
+    var m=b.querySelector("[id^=mku]");
+    if(m) all.push((m.innerText||m.textContent).replace(/\n+$/,"")+"\n");
+  });
+  doCpyBtn(all.join("\n"),"cpyMkUpBtn");
 }
 
 // --- IMPORT EXCEL ---
