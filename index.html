@@ -905,6 +905,7 @@ body.light .modal-btn.cancel { background: #f1f5f9; color: #475569; border-color
     <div class="tab" onclick="setSite('custom')" id="tab-custom" style="display:none"></div>
     <div class="tab" onclick="setSite('pindah')" id="tab-pindah" style="background:var(--blue);color:#fff;border-color:transparent;margin-left:10px">Pindah VLAN <span class="vb" style="background:rgba(0,0,0,.2);color:#fff">&#128257;</span></div>
     <div class="tab" onclick="setSite('ubahprofile')" id="tab-ubahprofile" style="background:#e65100;color:#fff;border-color:transparent;margin-left:10px">Ubah Profile <span class="vb" style="background:rgba(0,0,0,.2);color:#fff">&#9881;</span></div>
+    <div class="tab" onclick="setSite('removesecret')" id="tab-removesecret" style="background:#c62828;color:#fff;border-color:transparent;margin-left:10px">Hapus Secret <span class="vb" style="background:rgba(0,0,0,.2);color:#fff">&#10006;</span></div>
   </div>
   <div class="sinfo" id="sinfo"></div>
   <div class="card" id="mainCard">
@@ -1040,6 +1041,51 @@ gpon-onu_1/5/8:103&#9;ZTEG...&#9;816805981@bms.wifian.net.id"></textarea>
             <div style="font-size:11px;opacity:0.35">Paste ID Pelanggan &amp; klik Generate</div>
           </div>
           <pre id="upMikrotikPre" style="margin:0;padding:16px;font-family:var(--mono);font-size:12px;line-height:1.7;color:#ffcc80;overflow:auto;white-space:pre"></pre>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <div class="card" id="removeSecretCard" style="display:none">
+    <div class="card-hdr" style="background:linear-gradient(135deg,#c62828 0%,#d32f2f 50%,#e53935 100%);border-radius:10px 10px 0 0;padding:14px 20px">
+      <div class="card-title" style="color:#fff;font-size:15px;font-weight:700;display:flex;align-items:center;gap:10px">
+        <div style="width:8px;height:8px;border-radius:50%;background:#ef9a9a;box-shadow:0 0 8px #ef9a9a"></div>
+        &#10006; Hapus Secret Masal
+        <span style="background:rgba(255,255,255,0.15);border:1px solid rgba(255,255,255,0.25);color:#ffebee;font-size:10px;font-weight:600;padding:2px 8px;border-radius:20px;letter-spacing:1px">MIKROTIK</span>
+      </div>
+    </div>
+    <div style="display:flex;min-height:520px">
+      <!-- LEFT: Input Panel -->
+      <div style="width:300px;min-width:300px;padding:18px;border-right:1px solid var(--b2);display:flex;flex-direction:column;gap:12px">
+        <div style="flex:1;display:flex;flex-direction:column">
+          <label style="font-size:10px;font-weight:700;color:var(--text2);text-transform:uppercase;letter-spacing:0.5px;display:block;margin-bottom:5px">Data ID Pelanggan (Paste dari Excel) *</label>
+          <textarea id="rmDataTab" style="flex:1;min-height:300px;border-radius:6px;border:1px solid var(--b2);background:var(--s1);color:var(--t1);padding:10px;font-family:var(--mono);font-size:11px;resize:none;line-height:1.6;box-sizing:border-box" placeholder="Paste ID Pelanggan:
+543101188@kbm.wifian.net.id
+543101189@kbm.wifian.net.id"></textarea>
+        </div>
+        <div style="display:flex;gap:8px">
+          <button class="btn bp" style="background:linear-gradient(135deg,#c62828,#e53935);border:none;flex:1;height:36px;font-size:12px;font-weight:600;border-radius:7px" onclick="doRemoveSecret()">&#9889; Generate</button>
+          <button title="Clear" style="background:var(--s2);border:1px solid var(--b2);color:var(--text2);height:36px;width:36px;border-radius:7px;cursor:pointer;font-size:14px" onclick="document.getElementById('rmDataTab').value='';document.getElementById('rmEmptyState').style.display='flex';document.getElementById('rmMikrotikPre').textContent='';document.getElementById('rmCopyBtn').style.display='none';document.getElementById('rmIdCount').style.display='none';">&#10005;</button>
+        </div>
+      </div>
+
+      <!-- RIGHT: Output Panel -->
+      <div style="flex:1;display:flex;flex-direction:column;min-width:0">
+        <div style="padding:10px 16px;border-bottom:1px solid var(--b2);display:flex;align-items:center;justify-content:space-between;background:var(--s2)">
+          <div style="font-size:10px;font-weight:700;color:var(--text2);text-transform:uppercase;letter-spacing:1px">&#128203; Hasil Script Mikrotik</div>
+          <div style="display:flex;gap:6px;align-items:center">
+            <span id="rmIdCount" style="background:#d32f2f;color:#fff;font-size:10px;font-weight:700;padding:2px 8px;border-radius:12px;display:none">0 ID</span>
+            <button id="rmCopyBtn" onclick="copyTxt(document.getElementById('rmMikrotikPre'))" style="background:#d32f2f;color:#fff;border:none;border-radius:6px;padding:5px 12px;font-size:11px;font-weight:600;cursor:pointer;display:none">&#128203; Copy</button>
+          </div>
+        </div>
+        <div style="flex:1;position:relative;overflow:auto">
+          <div id="rmEmptyState" style="position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;color:var(--text2);gap:8px;pointer-events:none">
+            <div style="font-size:32px;opacity:0.3">&#10006;</div>
+            <div style="font-size:12px;opacity:0.5">Script Mikrotik akan muncul di sini</div>
+            <div style="font-size:11px;opacity:0.35">Paste ID Pelanggan &amp; klik Generate</div>
+          </div>
+          <pre id="rmMikrotikPre" style="margin:0;padding:16px;font-family:var(--mono);font-size:12px;line-height:1.7;color:#ffcdd2;overflow:auto;white-space:pre"></pre>
         </div>
       </div>
 
@@ -1232,6 +1278,7 @@ function setSite(s){
     document.getElementById("sinfo").style.display="none";
     document.getElementById("outSec").style.display="none";
     var uc=document.getElementById("ubahProfCard"); if(uc)uc.style.display="none";
+    var rc=document.getElementById("removeSecretCard"); if(rc)rc.style.display="none";
     document.getElementById("migCard").style.display="block";
     return;
   }else if(s==="ubahprofile"){
@@ -1239,11 +1286,21 @@ function setSite(s){
     document.getElementById("sinfo").style.display="none";
     document.getElementById("outSec").style.display="none";
     document.getElementById("migCard").style.display="none";
+    var rc=document.getElementById("removeSecretCard"); if(rc)rc.style.display="none";
     var uc=document.getElementById("ubahProfCard"); if(uc)uc.style.display="block";
+    return;
+  }else if(s==="removesecret"){
+    document.getElementById("mainCard").style.display="none";
+    document.getElementById("sinfo").style.display="none";
+    document.getElementById("outSec").style.display="none";
+    document.getElementById("migCard").style.display="none";
+    var uc=document.getElementById("ubahProfCard"); if(uc)uc.style.display="none";
+    var rc=document.getElementById("removeSecretCard"); if(rc)rc.style.display="block";
     return;
   }else{
     document.getElementById("migCard").style.display="none";
     var uc=document.getElementById("ubahProfCard"); if(uc)uc.style.display="none";
+    var rc=document.getElementById("removeSecretCard"); if(rc)rc.style.display="none";
     document.getElementById("mainCard").style.display="block";
     document.getElementById("sinfo").style.display="flex";
     var oh=document.querySelector("#outSec .oh");
@@ -1820,6 +1877,33 @@ function doUbahProf(){
   document.getElementById("upCopyBtn").style.display="inline-block";
   
   showToast(count+" ID berhasil digenerate!","ok");
+}
+
+// --- REMOVE SECRET MASAL ---
+function doRemoveSecret(){
+  var raw=document.getElementById("rmDataTab").value.trim();
+  if(!raw){showToast("Paste data ID Pelanggan terlebih dahulu!","warn");return;}
+  var lines=raw.split("\n");
+  var mkScript="";
+  var count=0;
+  
+  lines.forEach(function(l){
+    var id=l.trim();
+    if(!id) return;
+    mkScript += '/ppp secret remove [find name="'+id+'"]\n';
+    mkScript += '/ppp active remove [find name="'+id+'"]\n\n';
+    count++;
+  });
+  
+  document.getElementById("rmMikrotikPre").textContent=mkScript;
+  document.getElementById("rmEmptyState").style.display="none";
+  
+  var cntBadge=document.getElementById("rmIdCount");
+  cntBadge.textContent=count+" ID";
+  cntBadge.style.display="inline-block";
+  document.getElementById("rmCopyBtn").style.display="inline-block";
+  
+  showToast(count+" script hapus secret berhasil digenerate!","ok");
 }
 
 // ----------------------------------------------------
