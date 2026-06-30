@@ -1470,11 +1470,21 @@ function gClp(row){
   var alRaw=(row.alamat||"").trim();
   var naOrig=uu(row.nama), alOrig=uu(alRaw);
   var naU=naOrig.replace(/ /g,"_");
-  var alU=alOrig.replace(/ /g,"_");
+  // Parse alamat: pisahkan bagian DESA dan RT/RW
+  // Input contoh: "DESA BANGSA RT 07 RW 02"
+  // Output desk : "RT_07_RW_02_DESA_BANGSA"
+  var rtIdx=alOrig.indexOf(" RT ");
+  var desaPart, rtPart;
+  if(rtIdx>-1){
+    desaPart=alOrig.substring(0,rtIdx).trim();
+    rtPart=alOrig.substring(rtIdx+1).trim();
+  } else {
+    desaPart=alOrig; rtPart="";
+  }
+  var desk=rtPart?(rtPart+"_"+desaPart).replace(/ /g,"_"):desaPart.replace(/ /g,"_");
   var gp="1/"+(row.gpon||""),op_="1/"+(row.og||"");
-  var desk="DESA_"+alU;
   var oNm=p.id+"|"+naU;
-  var cmt=naOrig+" | DESA "+alOrig+" | "+(row.sn||"")+" | "+gp+":"+(row.onu||"");
+  var cmt=naOrig+" | "+alOrig+" | "+(row.sn||"")+" | "+gp+":"+(row.onu||"");
   var pon="gpon-olt_"+gp,op="gpon-onu_"+gp+":"+(row.onu||"");
   // ZTE ONT script (tanpa HS, tanpa ssid hidden)
   var z="conf t\ninterface "+pon+"\nno onu "+(row.onu||"")+"\nonu "+(row.onu||"")+" type ALL-ONT sn "+(row.sn||"")+"\nexit\n\ninterface "+op+"\nname "+oNm+"\ndescription $$"+desk+"$$\nsn-bind enable sn\ntcont 1 name T-PPP profile SERVER\ngemport 1 name G-PPP tcont 1\nservice-port 1 vport 1 user-vlan "+p.vp+" vlan "+p.vp+"\nservice-port 1 description PPP\nexit\n\npon-onu-mng "+op+"\nservice PPP gemport 1 vlan "+p.vp+"\nvlan port veip_1 mode hybrid def-vlan "+p.vp+"\nwan-ip 1 mode pppoe username "+pp+" password "+pw+" vlan-profile "+p.pro+" host 1\nwan-ip 1 ping-response enable traceroute-response enable\nsecurity-mgmt 212 state enable mode forward protocol web\ntr069-mgmt 1 acs http://172.27.0.191:7547/ validate basic username wifian password WSacs20000\nexit\nend\n";
