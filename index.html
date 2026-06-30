@@ -1785,7 +1785,6 @@ function cpyAllScript(){
     var nm=b.querySelector(".cbnm");
     var s=b.querySelector("[id^=sc]");
     if(s){
-      all.push("=== "+(nm?nm.textContent:"")+" ===");
       if(b.querySelector("[id^=dl]"))all.push(b.querySelector("[id^=dl]").textContent.trim());
       all.push((s.innerText||s.textContent).trim());
     }
