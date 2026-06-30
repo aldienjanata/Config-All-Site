@@ -1584,14 +1584,26 @@ function gClp(row){
 // SCRIPT GEN RKW
 function gRkw(row){
   var p=gpar(row),pp=p.id+p.dom,pw=p.id;
-  var naOrig=uu(row.nama), perOrig=uu(row.perum||"");
-  var naU=naOrig.replace(/ /g,"_"), perU=perOrig.replace(/ /g,"_");
+  var naOrig=uu(row.nama), perOrig=uu(row.perum||"").trim();
+  var naU=naOrig.replace(/ /g,"_");
+  
+  var rtIdx=perOrig.indexOf(" RT ");
+  var desaPart, rtPart;
+  if(rtIdx>-1){
+    desaPart=perOrig.substring(0,rtIdx).trim();
+    rtPart=perOrig.substring(rtIdx+1).trim();
+  } else {
+    desaPart=perOrig; rtPart="";
+  }
+  var desk=rtPart?(rtPart+"_"+desaPart).replace(/ /g,"_"):desaPart.replace(/ /g,"_");
+  
   var gp="1/"+(row.gpon||""),op_="1/"+(row.og||"");
-  var oNm=p.id+"|"+naU;
+  var nohpStr=(row.nohp||"").trim();
+  var oNm=p.id+"|"+naU+(nohpStr?("|"+nohpStr):"");
   var cmt=naOrig+" | "+perOrig+" | "+(row.sn||"")+" | "+gp+":"+(row.onu||"")+p.suf;
   var pon="gpon-olt_"+gp,op="gpon-onu_"+gp+":"+(row.onu||"");
-  var z="conf t\ninterface "+pon+"\nno onu "+(row.onu||"")+"\nonu "+(row.onu||"")+" type ALL-ONT sn "+(row.sn||"")+"\nexit\n\ninterface "+op+"\nname "+oNm+"\ndescription $$"+(row.nohp||"")+"$$\nsn-bind enable sn\ntcont 1 name T-PPP profile SERVER\ngemport 1 name G-PPP tcont 1\nservice-port 1 vport 1 user-vlan "+p.vp+" vlan "+p.vp+"\nservice-port 1 description PPP\nexit\n\npon-onu-mng "+op+"\nservice PPP gemport 1 vlan "+p.vp+"\nwan-ip 1 mode pppoe username "+pp+" password "+pw+" vlan-profile "+p.pro+" host 1\nwan-ip 1 ping-response enable traceroute-response enable\nsecurity-mgmt 212 state enable mode forward protocol web\ntr069-mgmt 1 acs http://172.27.0.191:7547/ validate basic username wifian password WSacs20000\nexit\nend\n";
-  var a="config t\ninterface "+pon+"\nno onu "+(row.onu||"")+"\nonu "+(row.onu||"")+" type ALL-ONT sn "+(row.sn||"")+"\nexit\n\ninterface "+op+"\nname "+oNm+"\ndescription $$"+(row.nohp||"")+"$$\nsn-bind enable sn\ntcont 1 name T-PPP profile SERVER\ngemport 1 name G-PPP tcont 1\nservice-port 1 vport 1 user-vlan "+p.vp+" vlan "+p.vp+"\nservice-port 1 description PPP\n\nexit\npon-onu-mng "+op+"\nservice PPP gemport 1 vlan "+p.vp+"\nvlan port veip_1 mode hybrid def-vlan "+p.vp+"\n\nexit\nend\n";
+  var z="conf t\ninterface "+pon+"\nno onu "+(row.onu||"")+"\nonu "+(row.onu||"")+" type ALL-ONT sn "+(row.sn||"")+"\nexit\n\ninterface "+op+"\nname "+oNm+"\ndescription $$"+desk+"$$\nsn-bind enable sn\ntcont 1 name T-PPP profile SERVER\ngemport 1 name G-PPP tcont 1\nservice-port 1 vport 1 user-vlan "+p.vp+" vlan "+p.vp+"\nservice-port 1 description PPP\nexit\n\npon-onu-mng "+op+"\nservice PPP gemport 1 vlan "+p.vp+"\nwan-ip 1 mode pppoe username "+pp+" password "+pw+" vlan-profile "+p.pro+" host 1\nwan-ip 1 ping-response enable traceroute-response enable\nsecurity-mgmt 212 state enable mode forward protocol web\ntr069-mgmt 1 acs http://172.27.0.191:7547/ validate basic username wifian password WSacs20000\nexit\nend\n";
+  var a="config t\ninterface "+pon+"\nno onu "+(row.onu||"")+"\nonu "+(row.onu||"")+" type ALL-ONT sn "+(row.sn||"")+"\nexit\n\ninterface "+op+"\nname "+oNm+"\ndescription $$"+desk+"$$\nsn-bind enable sn\ntcont 1 name T-PPP profile SERVER\ngemport 1 name G-PPP tcont 1\nservice-port 1 vport 1 user-vlan "+p.vp+" vlan "+p.vp+"\nservice-port 1 description PPP\n\nexit\npon-onu-mng "+op+"\nservice PPP gemport 1 vlan "+p.vp+"\nvlan port veip_1 mode hybrid def-vlan "+p.vp+"\n\nexit\nend\n";
   var mk="ppp secret add comment=\""+cmt+"\" name="+pp+" password="+pw+" profile=\""+row.paket+"\" service=pppoe\n";
   var mku="ppp secret set [find name=\""+pp+"\"] comment=\""+cmt+"\"\n";
   return{zte:z,aon:a,mk:mk,mku:mku,cmt:cmt,pp:pp,vp:p.vp,vh:null,pro:p.pro};
