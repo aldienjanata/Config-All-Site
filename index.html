@@ -1129,6 +1129,13 @@ gpon-onu_1/5/8:103&#9;ZTEG...&#9;816805981@bms.wifian.net.id"></textarea>
           <label style="font-size:11px;font-weight:600;color:var(--text2);text-transform:uppercase;letter-spacing:0.5px;display:block;margin-bottom:6px">Pilih Paket untuk Semua Baris <span style="color:#ef5350">*</span></label>
           <select id="importPaketSel" class="ig" style="width:100%;font-size:12px"></select>
         </div>
+        <div>
+          <label style="font-size:11px;font-weight:600;color:var(--text2);text-transform:uppercase;letter-spacing:0.5px;display:block;margin-bottom:6px">Pilih Tipe ONT untuk Semua Baris <span style="color:#ef5350">*</span></label>
+          <select id="importOtSel" class="ig" style="width:100%;font-size:12px">
+            <option value="zte">ZTE</option>
+            <option value="aon">All ONT</option>
+          </select>
+        </div>
         <div id="importVlanRow" style="display:none">
           <label style="font-size:11px;font-weight:600;color:var(--text2);text-transform:uppercase;letter-spacing:0.5px;display:block;margin-bottom:6px">VLAN PPPoE <span style="color:#f9a825;font-size:10px">(Khusus Banyumas)</span></label>
           <div style="display:flex;align-items:center;gap:10px">
@@ -1836,6 +1843,7 @@ function doImport(){
   var lines=raw.split("\n");
   var cols=gc().filter(function(c){return !c.tgl && c.k!=="paket";});
   var selectedPaket=document.getElementById("importPaketSel").value;
+  var selectedOt=document.getElementById("importOtSel").value || "zte";
   // VLAN override dari import modal
   var manualVlan=null;
   var manualRad=document.getElementById("importVlanManual");
@@ -1848,7 +1856,7 @@ function doImport(){
     var parts=l.split("\t");
     // Ignore completely empty rows
     if(parts.join("").trim()==="") return;
-    var row={id:++rid,ot:"zte",paket:selectedPaket};
+    var row={id:++rid,ot:selectedOt,paket:selectedPaket};
     cols.forEach(function(c,i){
       row[c.k]=(parts[i]||"").trim();
     });
