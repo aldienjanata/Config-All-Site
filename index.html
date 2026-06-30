@@ -1972,8 +1972,9 @@ function closeModal(){
   _modalCb=null;
 }
 function confirmModal(){
+  var cb = _modalCb;
   closeModal();
-  if(_modalCb)_modalCb();
+  if(cb) cb();
 }
 
 // ── TOAST NOTIFICATION ──
@@ -2005,43 +2006,6 @@ function closeToast(id){
     el.classList.add("out");
     setTimeout(function(){ if(el && el.parentNode) el.remove(); }, 250);
   } catch(e) {}
-}
-
-// INIT
-rInfo();rTable();rCards();addRow();upCnt();
-ner("appinstalled",function(){dimInst();});
-function doInst(){if(dp){dp.prompt();dp.userChoice.then(function(){dp=null;dimInst();});}}
-function dimInst(){var b=document.getElementById("instB");if(b)b.classList.remove("show");}
-if("serviceWorker"in navigator){navigator.serviceWorker.register("/sw.js").catch(function(){});}
-
-
-
-// ── CUSTOM MODAL / CONFIRM SYSTEM ──
-var _modalCb=null;
-function showModal(opts){
-  // opts: {title, msg, icon, confirmText, confirmClass, onConfirm, cancelText}
-  var ov=document.getElementById("modal-overlay");
-  if(!ov)return;
-  opts=opts||{};
-  ov.innerHTML='<div class="modal-box">'
-    +'<div class="modal-icon">'+(opts.icon||"&#9888;&#65039;")+'</div>'
-    +'<div class="modal-title">'+(opts.title||"Konfirmasi")+'</div>'
-    +'<div class="modal-msg">'+(opts.msg||"")+'</div>'
-    +'<div class="modal-actions">'
-    +'<button class="modal-btn cancel" onclick="closeModal()">'+( opts.cancelText||"Batal")+'</button>'
-    +'<button class="modal-btn '+(opts.confirmClass||"primary")+'" onclick="confirmModal()">'+( opts.confirmText||"OK")+'</button>'
-    +'</div></div>';
-  _modalCb=opts.onConfirm||null;
-  ov.classList.add("show");
-}
-function closeModal(){
-  var ov=document.getElementById("modal-overlay");
-  if(ov)ov.classList.remove("show");
-  _modalCb=null;
-}
-function confirmModal(){
-  closeModal();
-  if(_modalCb)_modalCb();
 }
 
 // ── PINDAH VLAN MASAL ──
