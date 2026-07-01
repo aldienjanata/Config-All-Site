@@ -1243,7 +1243,7 @@ function gc(){var f=S[cur].f;return(f==="rkw"||f==="kbm")?RC:CC;}
 function fid(r){return getPfx()+(r.suf||"");}
 function u_(s){return(s||"").toUpperCase();}
 function uu(s){return(s||"").toUpperCase();}
-function xe(s){return(s||"").replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;");}
+function xe(s){return String(s||"").replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;").replace(/"/g,"&quot;").replace(/'/g,"&#39;");}
 
 // BANYUMAS
 function bvp(id){var n=parseInt(id)||0;if(n>=816808001&&n<=816810000)return 182;if(n>=816805501&&n<=816808000)return 180;if(n>=816804001&&n<=816805500)return 179;if(n>=816802001&&n<=816804000)return 181;if(n>=816800001&&n<=816802000)return 168;return 168;}
@@ -1394,20 +1394,20 @@ function aTr(row,idx,cols,pfx){
       h2+="</div></td>";
     }else if(c.id){
       h2+="<td><div class='idw'><span class='idp'>"+pfx+"</span>";
-      h2+="<input type='text' class='"+c.c+"' data-id='"+rid+"' data-key='"+c.k+"'"+(c.minw?" data-minw='"+c.minw+"'":"")+" value='"+(row[c.k]||"")+"' placeholder='"+getPH(c.k,c.p||"")+"'"+(c.minw?" style='width:"+(Math.max(c.minw,(row[c.k]||getPH(c.k,c.p||"")||'').length*7+18))+"px'":"")+" oninput='uc(this)"+(c.minw?";autoW(this)":"")+"'>";
+      h2+="<input type='text' class='"+c.c+"' data-id='"+rid+"' data-key='"+c.k+"'"+(c.minw?" data-minw='"+c.minw+"'":"")+" value='"+xe(row[c.k])+"' placeholder='"+xe(getPH(c.k,c.p||""))+"'"+(c.minw?" style='width:"+(Math.max(c.minw,(row[c.k]||getPH(c.k,c.p||"")||'').length*7+18))+"px'":"")+" oninput='uc(this)"+(c.minw?";autoW(this)":"")+"'>";
       h2+="</div></td>";
     }else if(c.sel){
       h2+="<td><select class='"+c.c+"' data-id='"+rid+"' data-key='"+c.k+"' onchange='uc(this)'>";
-      h2+=PKT.map(function(p){return"<option"+(row[c.k]===p?" selected":"")+">"+p+"</option>";}).join("");
+      h2+=PKT.map(function(p){return"<option"+(row[c.k]===p?" selected":"")+">"+xe(p)+"</option>";}).join("");
       h2+="</select></td>";
     }else if(c.gp){
-      h2+="<td><div class='idw'><span class='idp'>1/</span><input type='text' class='"+c.c+"' data-id='"+rid+"' data-key='"+c.k+"' value='"+(row[c.k]||"")+"' placeholder='"+getPH(c.k,c.p||"")+"' oninput='uc(this)'></div></td>";
+      h2+="<td><div class='idw'><span class='idp'>1/</span><input type='text' class='"+c.c+"' data-id='"+rid+"' data-key='"+c.k+"' value='"+xe(row[c.k])+"' placeholder='"+xe(getPH(c.k,c.p||""))+"' oninput='uc(this)'></div></td>";
     }else{
-      h2+="<td><input type='text' class='"+(c.c||"")+"'"+(c.minw?" data-minw='"+c.minw+"'":"")+" data-id='"+rid+"' data-key='"+c.k+"' value='"+(row[c.k]||"")+"' placeholder='"+getPH(c.k,c.p||"")+"'"+(c.minw?" style='width:"+(Math.max(c.minw,(row[c.k]||getPH(c.k,c.p||"")||'').length*7+18))+"px'":"")+" oninput='uc(this)"+(c.minw?";autoW(this)":"")+"'></td>";
+      h2+="<td><input type='text' class='"+(c.c||"")+"'"+(c.minw?" data-minw='"+c.minw+"'":"")+" data-id='"+rid+"' data-key='"+c.k+"' value='"+xe(row[c.k])+"' placeholder='"+xe(getPH(c.k,c.p||""))+"'"+(c.minw?" style='width:"+(Math.max(c.minw,(row[c.k]||getPH(c.k,c.p||"")||'').length*7+18))+"px'":"")+" oninput='uc(this)"+(c.minw?";autoW(this)":"")+"'></td>";
     }
   });
   if(cur==="banyumas"||S[cur].f==="bms"){
-    h2+="<td><input type='text' data-id='"+row.id+"' data-key='vp' value='"+(row.vp||"")+"' placeholder='Auto' style='width:54px;text-align:center' title='Override VLAN PPPoE' oninput='uc(this)'></td>";
+    h2+="<td><input type='text' data-id='"+row.id+"' data-key='vp' value='"+xe(row.vp)+"' placeholder='Auto' style='width:54px;text-align:center' title='Override VLAN PPPoE' oninput='uc(this)'></td>";
   }
   h2+="<td><button class='btn bd bsm' onclick='remRow("+row.id+")'>&#10005;</button></td>";
   tr.innerHTML=h2;document.getElementById("tBody").appendChild(tr);
@@ -1420,23 +1420,23 @@ function aCard(row,idx,pfx){
   h2+="<div class='mcnm' id='cnm-"+rid+"'>"+xe(nm)+"</div>";
   h2+="<button class='btn bd bsm' onclick='remRow("+rid+")'>&#10005;</button></div>";
   h2+="<div class='mcbd'>";
-  h2+="<div class='fg'><div class='fl rq'>Interface GPON</div><div class='idw'><span class='idp'>1/</span><input type='text' data-id='"+rid+"' data-key='gpon' value='"+(row.gpon||"")+"' placeholder='"+(rkw?"3/14":"2/6")+"'  oninput='uc(this)'></div></div>";
-  h2+="<div class='fg'><div class='fl rq'>No ONU</div><input type='text' data-id='"+rid+"' data-key='onu' value='"+(row.onu||"")+"' placeholder='"+(sitePH[cur].onu||'64')+"' oninput='uc(this)'></div>";
-  h2+="<div class='fg'><div class='fl'>Old GPON</div><div class='idw'><span class='idp'>1/</span><input type='text' data-id='"+rid+"' data-key='og' value='"+(row.og||"")+"' placeholder='"+(sitePH[cur].og||'1/1')+"' oninput='uc(this)'></div></div>";
-  h2+="<div class='fg'><div class='fl'>Old ONU</div><input type='text' data-id='"+rid+"' data-key='oo' value='"+(row.oo||"")+"' placeholder='"+(sitePH[cur].oo||'10')+"' oninput='uc(this)'></div>";
-  h2+="<div class='fg full'><div class='fl rq'>SN ONT</div><input type='text' data-id='"+rid+"' data-key='sn' data-minw='145' value='"+(row.sn||"")+"' placeholder='"+(sitePH[cur].sn||'ZTEGXXXXXX')+"' oninput='uc(this);autoW(this)' style='width:"+(Math.max(145,(row.sn||sitePH[cur].sn||'ZTEGXXXXXX').length*7+18))+"px'></div>";
-  h2+="<div class='fg full'><div class='fl rq'>Nama Pelanggan</div><input type='text' data-id='"+rid+"' data-key='nama' value='"+(row.nama||"")+"' data-minw='165' placeholder='"+(sitePH[cur].nama||'MARYULI')+"' oninput='uc(this);autoW(this);updNm("+rid+")'></div>";
+  h2+="<div class='fg'><div class='fl rq'>Interface GPON</div><div class='idw'><span class='idp'>1/</span><input type='text' data-id='"+rid+"' data-key='gpon' value='"+xe(row.gpon)+"' placeholder='"+(rkw?"3/14":"2/6")+"'  oninput='uc(this)'></div></div>";
+  h2+="<div class='fg'><div class='fl rq'>No ONU</div><input type='text' data-id='"+rid+"' data-key='onu' value='"+xe(row.onu)+"' placeholder='"+xe(sitePH[cur].onu||'64')+"' oninput='uc(this)'></div>";
+  h2+="<div class='fg'><div class='fl'>Old GPON</div><div class='idw'><span class='idp'>1/</span><input type='text' data-id='"+rid+"' data-key='og' value='"+xe(row.og)+"' placeholder='"+xe(sitePH[cur].og||'1/1')+"' oninput='uc(this)'></div></div>";
+  h2+="<div class='fg'><div class='fl'>Old ONU</div><input type='text' data-id='"+rid+"' data-key='oo' value='"+xe(row.oo)+"' placeholder='"+xe(sitePH[cur].oo||'10')+"' oninput='uc(this)'></div>";
+  h2+="<div class='fg full'><div class='fl rq'>SN ONT</div><input type='text' data-id='"+rid+"' data-key='sn' data-minw='145' value='"+xe(row.sn)+"' placeholder='"+xe(sitePH[cur].sn||'ZTEGXXXXXX')+"' oninput='uc(this);autoW(this)' style='width:"+(Math.max(145,(row.sn||sitePH[cur].sn||'ZTEGXXXXXX').length*7+18))+"px'></div>";
+  h2+="<div class='fg full'><div class='fl rq'>Nama Pelanggan</div><input type='text' data-id='"+rid+"' data-key='nama' value='"+xe(row.nama)+"' data-minw='165' placeholder='"+xe(sitePH[cur].nama||'MARYULI')+"' oninput='uc(this);autoW(this);updNm("+rid+")'></div>";
   if(rkw){
-    h2+="<div class='fg full'><div class='fl rq'>No HP</div><input type='text' data-id='"+rid+"' data-key='nohp' data-minw='125' value='"+(row.nohp||"")+"' placeholder='"+(sitePH[cur].nohp||'0858...')+"' oninput='uc(this);autoW(this)'></div>";
-    h2+="<div class='fg full'><div class='fl rq'>Perumahan/Alamat</div><input type='text' data-id='"+rid+"' data-key='perum' value='"+(row.perum||"")+"' data-minw='195' placeholder='"+(sitePH[cur].perum||'RT 003 DESA...')+"' oninput='uc(this);autoW(this)'></div>";
+    h2+="<div class='fg full'><div class='fl rq'>No HP</div><input type='text' data-id='"+rid+"' data-key='nohp' data-minw='125' value='"+xe(row.nohp)+"' placeholder='"+xe(sitePH[cur].nohp||'0858...')+"' oninput='uc(this);autoW(this)'></div>";
+    h2+="<div class='fg full'><div class='fl rq'>Perumahan/Alamat</div><input type='text' data-id='"+rid+"' data-key='perum' value='"+xe(row.perum)+"' data-minw='195' placeholder='"+xe(sitePH[cur].perum||'RT 003 DESA...')+"' oninput='uc(this);autoW(this)'></div>";
   }else{
-    h2+="<div class='fg full'><div class='fl rq'>Alamat Lengkap</div><input type='text' data-id='"+rid+"' data-key='alamat' data-minw='300' value='"+(row.alamat||"")+"' placeholder='"+(sitePH[cur].alamat||'DESA KARANGTAWANG RT 003 RW 004')+"' oninput='uc(this);autoW(this)'></div>";
+    h2+="<div class='fg full'><div class='fl rq'>Alamat Lengkap</div><input type='text' data-id='"+rid+"' data-key='alamat' data-minw='300' value='"+xe(row.alamat)+"' placeholder='"+xe(sitePH[cur].alamat||'DESA KARANGTAWANG RT 003 RW 004')+"' oninput='uc(this);autoW(this)'></div>";
   }
   h2+="<div class='fg full'><div class='fl rq'>ID Pelanggan (suffix)</div>";
   h2+="<div class='idw'><span class='idp'>"+pfx+"</span>";
-  h2+="<input type='text' data-id='"+rid+"' data-key='suf' value='"+(row.suf||"")+"' placeholder='"+(sitePH[cur].suf||(rkw?"1205":"0437"))+"' oninput='uc(this)'></div></div>";
+  h2+="<input type='text' data-id='"+rid+"' data-key='suf' value='"+xe(row.suf)+"' placeholder='"+xe(sitePH[cur].suf||(rkw?"1205":"0437"))+"' oninput='uc(this)'></div></div>";
   if(bms){
-    h2+="<div class='fg'><div class='fl' style='color:#f9a825;font-size:11px'>VLAN PPPoE <small>(override, kosong=auto)</small></div><input type='text' data-id='"+rid+"' data-key='vp' value='"+(row.vp||"")+"' placeholder='Auto' style='width:70px' title='Isi manual jika VLAN tidak sesuai range otomatis' oninput='uc(this)'></div>";
+    h2+="<div class='fg'><div class='fl' style='color:#f9a825;font-size:11px'>VLAN PPPoE <small>(override, kosong=auto)</small></div><input type='text' data-id='"+rid+"' data-key='vp' value='"+xe(row.vp)+"' placeholder='Auto' style='width:70px' title='Isi manual jika VLAN tidak sesuai range otomatis' oninput='uc(this)'></div>";
   }
   var opts=PKT.map(function(p){return"<option"+(row.paket===p?" selected":"")+">"+p+"</option>";}).join("");
   h2+="<div class='fg full'><div class='fl rq'>Paket</div><select data-id='"+rid+"' data-key='paket' onchange='uc(this)'>"+opts+"</select></div>";
